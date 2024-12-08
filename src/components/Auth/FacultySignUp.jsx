@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router';
 
-const SignUp = () => {
+const FacultySignUp = () => {
   // State to store form data
   const [formData, setFormData] = useState({
     faculty_uid: '',
@@ -71,7 +71,7 @@ const SignUp = () => {
                 className="flex flex-col w-full h-full pb-6 text-center bg-white rounded-3xl"
                 onSubmit={handleSubmit}
               >
-                <h3 className="mb-3 text-4xl font-extrabold text-dark-grey-900">Sign Up</h3>
+                <h3 className="mb-3 text-4xl font-extrabold text-dark-grey-900">Faculty Sign Up</h3>
                 <p className="mb-4 text-grey-700"></p>
 
                 {/* Iterate over the inputFields array */}
@@ -102,7 +102,7 @@ const SignUp = () => {
                 </button>
                 <p className="text-sm leading-relaxed text-grey-900">
                   Have an account?{' '}
-                  <Link to="/signin" className="font-bold text-grey-700">
+                  <Link to="/faculty-signin" className="font-bold text-grey-700">
                     Sign In
                   </Link>
                 </p>
@@ -115,4 +115,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default FacultySignUp;

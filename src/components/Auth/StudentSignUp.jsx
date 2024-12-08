@@ -1,26 +1,48 @@
-import React, { useState } from "react";
-import { Link } from "react-router";
+import React, { useState } from 'react';
+import { Link } from 'react-router';
 
-const SignIn = () => {
+const StudentSignUp = () => {
   // State to store form data
   const [formData, setFormData] = useState({
-    faculty_email: "",
-    faculty_password: "",
+    faculty_uid: '',
+    faculty_name: '',
+    faculty_phone: '',
+    faculty_email: '',
+    faculty_password: '',
+    faculty_role: 'Professor', // Default role
   });
 
   // Array of input fields with their respective properties
   const inputFields = [
     {
-      id: "faculty_email",
-      label: "Email*",
-      type: "email",
-      placeholder: "mail@loopple.com",
+      id: 'faculty_uid',
+      label: 'UID',
+      type: 'text',
+      placeholder: 'Enter UID',
     },
     {
-      id: "faculty_password",
-      label: "Password*",
-      type: "password",
-      placeholder: "Enter a password",
+      id: 'faculty_name',
+      label: 'Full name',
+      type: 'text',
+      placeholder: 'Enter full name',
+    },
+    {
+      id: 'faculty_phone',
+      label: 'Mobile Number',
+      type: 'text',
+      placeholder: '+91 xxxxxxxxxx',
+    },
+    {
+      id: 'faculty_email',
+      label: 'Email*',
+      type: 'email',
+      placeholder: 'mail@loopple.com',
+    },
+    {
+      id: 'faculty_password',
+      label: 'Password*',
+      type: 'password',
+      placeholder: 'Enter a password',
     },
   ];
 
@@ -49,7 +71,7 @@ const SignIn = () => {
                 className="flex flex-col w-full h-full pb-6 text-center bg-white rounded-3xl"
                 onSubmit={handleSubmit}
               >
-                <h3 className="mb-3 text-4xl font-extrabold text-dark-grey-900">Sign In</h3>
+                <h3 className="mb-3 text-4xl font-extrabold text-dark-grey-900">Student Sign Up</h3>
                 <p className="mb-4 text-grey-700"></p>
 
                 {/* Iterate over the inputFields array */}
@@ -76,12 +98,12 @@ const SignIn = () => {
                   type="submit"
                   className="w-full px-6 py-5 mb-5 text-sm font-bold leading-none text-white transition duration-300 md:w-96 rounded-2xl hover:bg-purple-blue-600 focus:ring-4 focus:ring-purple-blue-100 bg-purple-500"
                 >
-                  Sign In
+                  Sign Up
                 </button>
                 <p className="text-sm leading-relaxed text-grey-900">
-                  Don't have an account?{' '}
-                  <Link to="/signup" className="font-bold text-grey-700">
-                    Sign up
+                  Have an account?{' '}
+                  <Link to="/student-signin" className="font-bold text-grey-700">
+                    Sign In
                   </Link>
                 </p>
               </form>
@@ -93,4 +115,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default StudentSignUp;
