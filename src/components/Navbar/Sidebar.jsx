@@ -6,6 +6,7 @@ const navigation = [
   { name: "Home", href: "/" },
   { name: "Pending request", href: "/requests" },
   { name: "Project Groups", href: "/project-batch" },
+  { name: "Profile", href: "/profile" },
 ];
 
 const Sidebar = () => {
