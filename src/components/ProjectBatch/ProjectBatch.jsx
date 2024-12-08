@@ -85,22 +85,6 @@ const ProjectBatch = () => {
       facultyApprovalStatus: true,
     },
     {
-      projectId: 2,
-      studentProjectName: "E-commerce Website",
-      academicYear: "2022",
-      studentProjectLeaderId: "STU126",
-      teamMembers: ["STU127", "STU128"],
-      studentProjectGuideId: "FAC002",
-      studentProjectDomain: "Web Development",
-      studentProjectDescription: "An e-commerce platform for local businesses.",
-      studentProjectType: "Development",
-      studentProjectReport: "report_ecommerce.pdf",
-      studentProjectStart: "2024-12-10",
-      studentProjectCompletionStatus: "Pending",
-      studentProjectUrl: "http://example.com/ecommerce",
-      facultyApprovalStatus: true,
-    },
-    {
       projectId: 3,
       studentProjectName: "Health Tracker App",
       academicYear: "2023",
@@ -133,12 +117,38 @@ const ProjectBatch = () => {
 
   return (
     <div className="p-6 min-h-screen">
-      <h1 className="text-2xl font-bold text-center mb-6">Project Status</h1>
+      <h1 className="text-2xl font-bold text-center mb-6">
+        Filter Projects by Academic Year
+      </h1>
 
-      {/* Display Projects */}
+      {/* Dropdown and Search Button */}
+      <div className="flex flex-col items-center md:flex-row md:justify-center gap-4 mb-6">
+        <select
+          value={selectedYear}
+          onChange={(e) => setSelectedYear(e.target.value)}
+          className="border border-gray-300 rounded-md p-2 w-full md:w-64"
+        >
+          <option value="" disabled>
+            Select Academic Year
+          </option>
+          {years.map((year) => (
+            <option key={year} value={year.toString()}>
+              {year}
+            </option>
+          ))}
+        </select>
+        <button
+          onClick={handleFilter}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          Search
+        </button>
+      </div>
+
+      {/* Display Filtered Projects */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {data.length > 0 ? (
-          data.map((project) => (
+        {filteredProjects.length > 0 ? (
+          filteredProjects.map((project) => (
             <div
               key={project.projectId}
               className="bg-white shadow-md rounded-lg p-4 border border-gray-200"
@@ -174,8 +184,8 @@ const ProjectBatch = () => {
             </div>
           ))
         ) : (
-          <p className="text-2xl font-bold text-center col-span-full text-gray-800">
-            No Projects Available
+          <p className="text-gray-600 text-center col-span-full">
+            No projects available.
           </p>
         )}
       </div>
