@@ -8,11 +8,13 @@ import SignUp from "../components/Auth/SignUp.jsx";
 import PageNotFound from "../pages/PageNotFound.jsx";
 import Navbar from "../components/Navbar/Navbar.jsx";
 import ApproveRequests from "../components/ApproveRequests/ApproveRequests.jsx";
+import ProjectBatch from "../components/ProjectBatch/ProjectBatch.jsx";
 
 const AppRoutes = () => {
   const location = useLocation();
 
-  const showNavigation = location.pathname !== "/signin" && location.pathname !== "/signup";
+  const showNavigation =
+    location.pathname !== "/signin" && location.pathname !== "/signup";
 
   return (
     <>
@@ -27,8 +29,11 @@ const AppRoutes = () => {
         <Route path="signin" element={<SignIn />} />
         <Route path="signup" element={<SignUp />} />
 
-        {/*Approve */}
+        {/*Approve-ending-project*/}
         <Route path="requests" element={<ApproveRequests />} />
+
+        {/* view all project batch wise */}
+        <Route path="project-batch" element={<ProjectBatch />} />
 
         {/* Page Not Found route */}
         <Route path="*" element={<PageNotFound />} />
