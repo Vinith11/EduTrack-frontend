@@ -9,6 +9,8 @@ import FacultySignIn from "../components/Auth/FacultySignIn.jsx";
 import FacultySignUp from "../components/Auth/FacultySignUp.jsx";
 import StudentSignIn from "../components/Auth/StudentSignIn.jsx";
 import StudentSignUp from "../components/Auth/StudentSignUp.jsx";
+import InternshipForm from "../components/Internship/InternshipForm.jsx";
+import AllInternship from "../components/Internship/AllInternship.jsx";
 
 const AppRoutes = () => {
   const location = useLocation();
@@ -32,7 +34,7 @@ const AppRoutes = () => {
 
         {/* view all project batch wise */}
         <Route path="project-batch" element={<ProjectBatch />} />
-        
+
         {/* Profile */}
         <Route path="profile" element={<Profile />} />
 
@@ -41,9 +43,12 @@ const AppRoutes = () => {
         <Route path="student-signin" element={<StudentSignIn />} />
         <Route path="student-signup" element={<StudentSignUp />} />
 
+        {/* Internship form */}
+        <Route path="internship-form" element={<InternshipForm />} />
+        <Route path="all-internship" element={<AllInternship />} />
+
         {/* Page Not Found route */}
         <Route path="*" element={<PageNotFound />} />
-
       </Routes>
     </>
   );
