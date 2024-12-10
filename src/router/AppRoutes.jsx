@@ -11,6 +11,8 @@ import StudentSignIn from "../components/Auth/StudentSignIn.jsx";
 import StudentSignUp from "../components/Auth/StudentSignUp.jsx";
 import InternshipForm from "../components/Internship/InternshipForm.jsx";
 import AllInternship from "../components/Internship/AllInternship.jsx";
+import ProjectForm from "../components/Project/ProjectForm.jsx";
+import SelectTeamMembers from "../components/Project/SelectTeamMembers.jsx";
 
 const AppRoutes = () => {
   const location = useLocation();
@@ -46,6 +48,11 @@ const AppRoutes = () => {
         {/* Internship form */}
         <Route path="internship-form" element={<InternshipForm />} />
         <Route path="all-internship" element={<AllInternship />} />
+
+        {/* Project */}
+        <Route path="/project-form" element={<ProjectForm />} />
+        <Route path="/select-team-members" element={<SelectTeamMembers />} />
+      
 
         {/* Page Not Found route */}
         <Route path="*" element={<PageNotFound />} />
