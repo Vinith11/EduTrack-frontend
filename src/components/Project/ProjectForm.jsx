@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { SnackbarContext } from "../../context/SnackbarProvider";
 
 const sampleGuides = [
   {
@@ -33,6 +34,7 @@ const ProjectForm = () => {
   const location = useLocation();
   const preselectedTeam = JSON.parse(localStorage.getItem("selectedTeamMembers")) || [];
 
+    const {message, setMessage, handleSnackbarOpen } = useContext(SnackbarContext);
 
   const [formData, setFormData] = useState({
     student_project_name: "",
@@ -90,6 +92,10 @@ const ProjectForm = () => {
     console.log("Form Data:", formData);
     localStorage.removeItem("projectFormData");
     localStorage.removeItem("selectedTeamMembers");
+
+    setMessage("Submitted");
+    handleSnackbarOpen();
+    navigate("/")
   };
 
   return (
