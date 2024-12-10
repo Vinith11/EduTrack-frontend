@@ -34,7 +34,7 @@ const ProjectForm = () => {
   const location = useLocation();
   const preselectedTeam = JSON.parse(localStorage.getItem("selectedTeamMembers")) || [];
 
-    const {message, setMessage, handleSnackbarOpen } = useContext(SnackbarContext);
+    const { handleSnackbarOpen } = useContext(SnackbarContext);
 
   const [formData, setFormData] = useState({
     student_project_name: "",
@@ -93,8 +93,9 @@ const ProjectForm = () => {
     localStorage.removeItem("projectFormData");
     localStorage.removeItem("selectedTeamMembers");
 
-    setMessage("Submitted");
-    handleSnackbarOpen();
+    // setMessage("Submitted");
+    // handleSnackbarOpen("Submitted", false);
+    handleSnackbarOpen("Not submitted Submitted", true);
     navigate("/")
   };
 
