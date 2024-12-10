@@ -39,7 +39,8 @@ const SelectTeamMembers = () => {
   };
 
   const handleConfirmSelection = () => {
-    navigate("/project-form", { state: { selected: selectedMembers } });
+    localStorage.setItem("selectedTeamMembers", JSON.stringify(selectedMembers));
+    navigate("/project-form");
   };
 
   return (

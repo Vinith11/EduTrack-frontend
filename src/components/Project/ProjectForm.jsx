@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const sampleGuides = [
@@ -31,7 +31,8 @@ const sampleGuides = [
 const ProjectForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const preselectedTeam = location.state?.selected || [];
+  const preselectedTeam = JSON.parse(localStorage.getItem("selectedTeamMembers")) || [];
+
 
   const [formData, setFormData] = useState({
     student_project_name: "",
@@ -50,11 +51,13 @@ const ProjectForm = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData((prevData) => {
+      const updatedData = { ...prevData, [name]: value };
+      localStorage.setItem("projectFormData", JSON.stringify(updatedData)); // Save to localStorage
+      return updatedData;
+    });
   };
+  
 
   const handleSelectTeamMembers = () => {
     navigate("/select-team-members", {
@@ -62,9 +65,31 @@ const ProjectForm = () => {
     });
   };
 
+  useEffect(() => {
+    // Retrieve project form data from localStorage
+    const storedData = localStorage.getItem("projectFormData");
+    if (storedData) {
+      setFormData(JSON.parse(storedData));
+    }
+  
+    // Retrieve team data from localStorage
+    const teamData = localStorage.getItem("selectedTeamMembers");
+    if (teamData) {
+      // Parse the team data and set it in team_members
+      const parsedTeamData = JSON.parse(teamData);
+      setFormData((prevData) => ({
+        ...prevData,
+        team_members: parsedTeamData,  // Set the team_members field
+      }));
+    }
+  }, []);
+  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form Data:", formData);
+    localStorage.removeItem("projectFormData");
+    localStorage.removeItem("selectedTeamMembers");
   };
 
   return (
