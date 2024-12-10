@@ -28,26 +28,26 @@ const AppRoutes = () => {
 
         {/* Faculty */}
         {/* Auth */}
-        <Route path="faculty-signin" element={<FacultySignIn />} />
-        <Route path="faculty-signup" element={<FacultySignUp />} />
+        <Route path="/faculty-signin" element={<FacultySignIn />} />
+        <Route path="/faculty-signup" element={<FacultySignUp />} />
 
         {/*Approve-ending-project*/}
-        <Route path="requests" element={<ApproveRequests />} />
+        <Route path="/requests" element={<ApproveRequests />} />
 
         {/* view all project batch wise */}
-        <Route path="project-batch" element={<ProjectBatch />} />
+        <Route path="/project-batch" element={<ProjectBatch />} />
 
         {/* Profile */}
-        <Route path="profile" element={<Profile />} />
+        <Route path="/profile" element={<Profile />} />
 
         {/* Student */}
         {/* Auth */}
-        <Route path="student-signin" element={<StudentSignIn />} />
-        <Route path="student-signup" element={<StudentSignUp />} />
+        <Route path="/student-signin" element={<StudentSignIn />} />
+        <Route path="/student-signup" element={<StudentSignUp />} />
 
         {/* Internship form */}
-        <Route path="internship-form" element={<InternshipForm />} />
-        <Route path="all-internship" element={<AllInternship />} />
+        <Route path="/internship-form" element={<InternshipForm />} />
+        <Route path="/all-internship" element={<AllInternship />} />
 
         {/* Project */}
         <Route path="/project-form" element={<ProjectForm />} />
