@@ -77,7 +77,7 @@ const StudentSignIn = () => {
       handleSnackbarOpen("Login Successfull", false);
 
       // Navigate to profile
-      navigate("/profile");
+      navigate("/student-profile");
     } else {
       const errorMessage =
         response.data.error || "An error occurred. Please try again.";
