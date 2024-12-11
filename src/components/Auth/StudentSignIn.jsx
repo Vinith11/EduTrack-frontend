@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setJwt } from "../../redux/slices/authSlice";
+import { setJwt, setUserProfile } from "../../redux/slices/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { SnackbarContext } from "../../context/SnackbarProvider";
@@ -56,6 +56,23 @@ const StudentSignIn = () => {
       dispatch(setJwt(jwt));
 
       console.log("JWT:", jwt);
+
+      const profileResponse = await axios.get(
+        "http://localhost:5454/api/student/users/profile",
+        {
+          headers: { Authorization: `Bearer ${jwt}` },
+        }
+      );
+
+      const {
+        usn,
+        student_email: email,
+        student_batch: batch,
+        project_id,
+      } = profileResponse.data;
+
+      // Dispatch profile data to Redux
+      dispatch(setUserProfile({ usn, email, batch, project_id }));
 
       handleSnackbarOpen("Login Successfull", false);
 

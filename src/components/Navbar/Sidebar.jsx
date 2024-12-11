@@ -1,23 +1,38 @@
 import { div } from "framer-motion/client";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { clearJwt } from "../../redux/slices/authSlice";
 
 const navigation = [
   { name: "Home", href: "/" },
   { name: "Pending request", href: "/requests" },
   { name: "Project Groups", href: "/project-batch" },
   { name: "Profile", href: "/profile" },
-  { name: "Internship Form", href: "/internship-form"},
-  { name: "All Internship", href: "/all-internship"},
-  { name: "Project form", href: "/project-form"}
+  { name: "Internship Form", href: "/internship-form" },
+  { name: "All Internship", href: "/all-internship" },
+  { name: "Project form", href: "/project-form" },
 ];
 
 const Sidebar = () => {
-  const [showSidebar, setShowSidebar] = useState(true);
+  const [showSidebar, setShowSidebar] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const role = useSelector((state) => state.auth.role);
 
   const handleSignOut = () => {
-    navigate("/");
+    // Remove JWT from local storage and clear it from state
+    dispatch(clearJwt()); // Assuming you're using Redux to manage JWT
+    localStorage.removeItem("role"); // Clear role from local storage
+
+    // Navigate based on role
+    if (role === "Student") {
+      navigate("/student-signin");
+    } else if (role === "Faculty") {
+      navigate("/faculty-signin");
+    } else {
+      navigate("/"); // Default route in case role is missing
+    }
   };
 
   return (
@@ -66,6 +81,7 @@ const Sidebar = () => {
             <button
               onClick={() => {
                 setShowSidebar(!showSidebar);
+                handleSignOut();
               }}
               className="absolute bottom-0 left-0 w-full py-3 text-lg font-semibold text-white bg-blue-500 hover:bg-blue-600"
             >

@@ -18,7 +18,10 @@ const AppRoutes = () => {
   const location = useLocation();
 
   const showNavigation =
-    location.pathname !== "/signin" && location.pathname !== "/signup";
+    location.pathname !== "/student-signin" &&
+    location.pathname !== "/student-signup" &&
+    location.pathname !== "/faculty-signup" &&
+    location.pathname !== "/faculty-signin";
 
   return (
     <>
@@ -52,7 +55,6 @@ const AppRoutes = () => {
         {/* Project */}
         <Route path="/project-form" element={<ProjectForm />} />
         <Route path="/select-team-members" element={<SelectTeamMembers />} />
-      
 
         {/* Page Not Found route */}
         <Route path="*" element={<PageNotFound />} />
