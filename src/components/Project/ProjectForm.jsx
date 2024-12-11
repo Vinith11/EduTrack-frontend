@@ -32,9 +32,10 @@ const sampleGuides = [
 const ProjectForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const preselectedTeam = JSON.parse(localStorage.getItem("selectedTeamMembers")) || [];
+  const preselectedTeam =
+    JSON.parse(localStorage.getItem("selectedTeamMembers")) || [];
 
-    const { handleSnackbarOpen } = useContext(SnackbarContext);
+  const { handleSnackbarOpen } = useContext(SnackbarContext);
 
   const [formData, setFormData] = useState({
     student_project_name: "",
@@ -59,7 +60,6 @@ const ProjectForm = () => {
       return updatedData;
     });
   };
-  
 
   const handleSelectTeamMembers = () => {
     navigate("/select-team-members", {
@@ -73,7 +73,7 @@ const ProjectForm = () => {
     if (storedData) {
       setFormData(JSON.parse(storedData));
     }
-  
+
     // Retrieve team data from localStorage
     const teamData = localStorage.getItem("selectedTeamMembers");
     if (teamData) {
@@ -81,11 +81,10 @@ const ProjectForm = () => {
       const parsedTeamData = JSON.parse(teamData);
       setFormData((prevData) => ({
         ...prevData,
-        team_members: parsedTeamData,  // Set the team_members field
+        team_members: parsedTeamData, // Set the team_members field
       }));
     }
   }, []);
-  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -96,7 +95,7 @@ const ProjectForm = () => {
     // setMessage("Submitted");
     // handleSnackbarOpen("Submitted", false);
     handleSnackbarOpen("Not submitted Submitted", true);
-    navigate("/")
+    navigate("/");
   };
 
   return (

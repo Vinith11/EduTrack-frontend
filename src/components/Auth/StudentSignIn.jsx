@@ -1,30 +1,36 @@
-import React, { useState } from "react";
-import { Link } from "react-router";
+import React, { useContext, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setJwt } from "../../redux/slices/authSlice";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { SnackbarContext } from "../../context/SnackbarProvider";
 
 const StudentSignIn = () => {
-  // State to store form data
   const [formData, setFormData] = useState({
-    faculty_email: "",
-    faculty_password: "",
+    email: "",
+    password: "",
   });
+  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // Array of input fields with their respective properties
+  const { handleSnackbarOpen } = useContext(SnackbarContext);
+
   const inputFields = [
     {
-      id: "faculty_email",
+      id: "email",
       label: "Email*",
       type: "email",
       placeholder: "mail@loopple.com",
     },
     {
-      id: "faculty_password",
+      id: "password",
       label: "Password*",
       type: "password",
       placeholder: "Enter a password",
     },
   ];
 
-  // Handle input changes
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     setFormData((prevData) => ({
@@ -33,10 +39,34 @@ const StudentSignIn = () => {
     }));
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData); // Log the data in the desired format
+    setError(null);
+
+    const response = await axios.post(
+      "http://localhost:5454/auth/student/signin",
+      formData
+    );
+
+    console.log(response);
+
+    if (response.status == 200) {
+      const { jwt } = response.data;
+      // Dispatch JWT to Redux
+      dispatch(setJwt(jwt));
+
+      console.log("JWT:", jwt);
+
+      handleSnackbarOpen("Login Successfull", false);
+
+      // Navigate to profile
+      navigate("/profile");
+    } else {
+      const errorMessage =
+        response.data.error || "An error occurred. Please try again.";
+      setError(errorMessage);
+      handleSnackbarOpen(errorMessage, true);
+    }
   };
 
   return (
@@ -49,10 +79,12 @@ const StudentSignIn = () => {
                 className="flex flex-col w-full h-full pb-6 text-center bg-white rounded-3xl"
                 onSubmit={handleSubmit}
               >
-                <h3 className="mb-3 text-4xl font-extrabold text-dark-grey-900">Student Sign In</h3>
-                <p className="mb-4 text-grey-700"></p>
+                <h3 className="mb-3 text-4xl font-extrabold text-dark-grey-900">
+                  Student Sign In
+                </h3>
 
-                {/* Iterate over the inputFields array */}
+                {error && <p className="text-red-500">{error}</p>}
+
                 {inputFields.map((field, index) => (
                   <div key={index} className="mb-7">
                     <label
@@ -65,8 +97,8 @@ const StudentSignIn = () => {
                       id={field.id}
                       type={field.type}
                       placeholder={field.placeholder}
-                      value={formData[field.id]} // Bind input to state
-                      onChange={handleInputChange} // Handle change
+                      value={formData[field.id]}
+                      onChange={handleInputChange}
                       className="flex items-center w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
                     />
                   </div>
@@ -79,8 +111,11 @@ const StudentSignIn = () => {
                   Sign In
                 </button>
                 <p className="text-sm leading-relaxed text-grey-900">
-                  Don't have an account?{' '}
-                  <Link to="/student-signup" className="font-bold text-grey-700">
+                  Don't have an account?{" "}
+                  <Link
+                    to="/student-signup"
+                    className="font-bold text-grey-700"
+                  >
                     Sign up
                   </Link>
                 </p>
