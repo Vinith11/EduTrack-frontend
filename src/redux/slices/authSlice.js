@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
-    jwt: localStorage.getItem('jwt') || null, // Retrieve JWT from local storage
+    jwt: null,
     usn: null,
     email: null,
     batch: null,
@@ -15,7 +15,6 @@ const authSlice = createSlice({
   reducers: {
     setJwt(state, action) {
       state.jwt = action.payload;
-      localStorage.setItem('jwt', action.payload); // Store JWT in local storage
     },
     clearJwt(state) {
       state.jwt = null;
@@ -26,7 +25,6 @@ const authSlice = createSlice({
       state.role = null;
       state.faculty_uid = null;
       state.faculty_email = null;
-      localStorage.removeItem('jwt'); // Clear JWT from local storage
     },
     setUserProfile(state, action) {
       const { usn, email, batch, project_id } = action.payload;

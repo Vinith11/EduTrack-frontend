@@ -28,7 +28,7 @@ const Sidebar = () => {
   // Define navigation routes based on roles
   const studentRoutes = [
     { name: "Home", href: "/" },
-    { name: "Profile", href: "/profile" },
+    { name: "Profile", href: "/student-profile" },
     { name: "Internship Form", href: "/internship-form" },
     { name: "All Internship", href: "/all-internship" },
     ...(projectId === null
