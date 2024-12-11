@@ -1,4 +1,10 @@
+
+// AppRoutes.jsx
+import React from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+
+import ProtectedRoutes from "./ProtectedRoutes";
 import App from "../App.jsx";
 import PageNotFound from "../pages/PageNotFound.jsx";
 import Navbar from "../components/Navbar/Navbar.jsx";
@@ -16,6 +22,7 @@ import SelectTeamMembers from "../components/Project/SelectTeamMembers.jsx";
 
 const AppRoutes = () => {
   const location = useLocation();
+  const projectId = useSelector((state) => state.auth.project_id);
 
   const showNavigation =
     location.pathname !== "/student-signin" &&
@@ -27,36 +34,30 @@ const AppRoutes = () => {
     <>
       {showNavigation && <Navbar />}
       <Routes>
-        <Route path="/" element={<App />} />
-
-        {/* Faculty */}
-        {/* Auth */}
+        {/* Public Routes */}
+        <Route path="/student-signin" element={<StudentSignIn />} />
+        <Route path="/student-signup" element={<StudentSignUp />} />
         <Route path="/faculty-signin" element={<FacultySignIn />} />
         <Route path="/faculty-signup" element={<FacultySignUp />} />
 
-        {/*Approve-ending-project*/}
-        <Route path="/requests" element={<ApproveRequests />} />
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoutes allowedRoles={["Faculty"]} />}>
+          <Route path="/" element={<App />} />
+          <Route path="/requests" element={<ApproveRequests />} />
+          <Route path="/project-batch" element={<ProjectBatch />} />
+          <Route path="/profile" element={<Profile />} />
+        </Route>
 
-        {/* view all project batch wise */}
-        <Route path="/project-batch" element={<ProjectBatch />} />
+        <Route element={<ProtectedRoutes allowedRoles={["Student"]} />}>
+          <Route path="/" element={<App />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/internship-form" element={<InternshipForm />} />
+          <Route path="/all-internship" element={<AllInternship />} />
+          {projectId === null && <Route path="/project-form" element={<ProjectForm />} />}
+          <Route path="/select-team-members" element={<SelectTeamMembers />} />
+        </Route>
 
-        {/* Profile */}
-        <Route path="/profile" element={<Profile />} />
-
-        {/* Student */}
-        {/* Auth */}
-        <Route path="/student-signin" element={<StudentSignIn />} />
-        <Route path="/student-signup" element={<StudentSignUp />} />
-
-        {/* Internship form */}
-        <Route path="/internship-form" element={<InternshipForm />} />
-        <Route path="/all-internship" element={<AllInternship />} />
-
-        {/* Project */}
-        <Route path="/project-form" element={<ProjectForm />} />
-        <Route path="/select-team-members" element={<SelectTeamMembers />} />
-
-        {/* Page Not Found route */}
+        {/* Not Found */}
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </>

@@ -1,5 +1,9 @@
-import React, { useState } from "react";
-import { Link } from "react-router";
+import React, { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import { setJwt, setFacultyProfile } from "../../redux/slices/authSlice"; // Update with your actual path
+import { SnackbarContext } from "../../context/SnackbarProvider";
 
 const FacultySignIn = () => {
   // State to store form data
@@ -7,6 +11,12 @@ const FacultySignIn = () => {
     faculty_email: "",
     faculty_password: "",
   });
+
+  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const { handleSnackbarOpen } = useContext(SnackbarContext);
 
   // Array of input fields with their respective properties
   const inputFields = [
@@ -34,9 +44,48 @@ const FacultySignIn = () => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData); // Log the data in the desired format
+    setError(null); // Reset error state
+
+    // Step 1: Faculty Sign-in
+    const signinResponse = await axios.post(
+      "http://localhost:5454/auth/faculty/signin",
+      {
+        email: formData.faculty_email,
+        password: formData.faculty_password,
+      }
+    );
+    console.log(signinResponse);
+
+    if (signinResponse.status == 200) {
+      const { jwt } = signinResponse.data;
+
+      // Save JWT in Redux and local storage
+      dispatch(setJwt(jwt));
+
+      console.log("JWT: ", jwt);
+      // Step 2: Fetch Faculty Profile
+      const profileResponse = await axios.get(
+        "http://localhost:5454/api/faculty/users/profile",
+        {
+          headers: { Authorization: `Bearer ${jwt}` },
+        }
+      );
+
+      const { faculty_uid, faculty_email } = profileResponse.data;
+      // Save Faculty Profile in Redux
+      dispatch(setFacultyProfile({ faculty_uid, faculty_email }));
+
+      handleSnackbarOpen("Login Successfull", false);
+
+      // Navigate to profile
+      navigate("/profile");
+    } else{
+      const errorMessage = signinResponse.data.error || "An error occurred. Please try again.";
+      setError(errorMessage);
+      handleSnackbarOpen(errorMessage, true);
+    }
   };
 
   return (
@@ -49,7 +98,9 @@ const FacultySignIn = () => {
                 className="flex flex-col w-full h-full pb-6 text-center bg-white rounded-3xl"
                 onSubmit={handleSubmit}
               >
-                <h3 className="mb-3 text-4xl font-extrabold text-dark-grey-900">Faculty Sign In</h3>
+                <h3 className="mb-3 text-4xl font-extrabold text-dark-grey-900">
+                  Faculty Sign In
+                </h3>
                 <p className="mb-4 text-grey-700"></p>
 
                 {/* Iterate over the inputFields array */}
@@ -79,8 +130,11 @@ const FacultySignIn = () => {
                   Sign In
                 </button>
                 <p className="text-sm leading-relaxed text-grey-900">
-                  Don't have an account?{' '}
-                  <Link to="/faculty-signup" className="font-bold text-grey-700">
+                  Don't have an account?{" "}
+                  <Link
+                    to="/faculty-signup"
+                    className="font-bold text-grey-700"
+                  >
                     Sign up
                   </Link>
                 </p>

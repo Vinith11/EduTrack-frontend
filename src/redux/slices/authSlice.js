@@ -9,6 +9,8 @@ const authSlice = createSlice({
     batch: null,
     project_id: null,
     role: null,
+    faculty_uid: null,
+    faculty_email: null,
   },
   reducers: {
     setJwt(state, action) {
@@ -22,6 +24,8 @@ const authSlice = createSlice({
       state.batch = null;
       state.project_id = null;
       state.role = null;
+      state.faculty_uid = null;
+      state.faculty_email = null;
       localStorage.removeItem('jwt'); // Clear JWT from local storage
     },
     setUserProfile(state, action) {
@@ -32,8 +36,14 @@ const authSlice = createSlice({
       state.project_id = project_id;
       state.role = 'Student';
     },
+    setFacultyProfile(state, action) {
+      const { faculty_uid, faculty_email } = action.payload;
+      state.faculty_uid = faculty_uid;
+      state.faculty_email = faculty_email;
+      state.role = 'Faculty';
+    },
   },
 });
 
-export const { setJwt, clearJwt, setUserProfile } = authSlice.actions;
+export const { setJwt, clearJwt, setUserProfile, setFacultyProfile } = authSlice.actions;
 export default authSlice.reducer;

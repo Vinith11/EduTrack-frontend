@@ -1,39 +1,54 @@
-import { div } from "framer-motion/client";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { clearJwt } from "../../redux/slices/authSlice";
 
-const navigation = [
-  { name: "Home", href: "/" },
-  { name: "Pending request", href: "/requests" },
-  { name: "Project Groups", href: "/project-batch" },
-  { name: "Profile", href: "/profile" },
-  { name: "Internship Form", href: "/internship-form" },
-  { name: "All Internship", href: "/all-internship" },
-  { name: "Project form", href: "/project-form" },
-];
 
 const Sidebar = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const role = useSelector((state) => state.auth.role);
+  const projectId = useSelector((state) => state.auth.project_id);
+
 
   const handleSignOut = () => {
-    // Remove JWT from local storage and clear it from state
-    dispatch(clearJwt()); // Assuming you're using Redux to manage JWT
-    localStorage.removeItem("role"); // Clear role from local storage
+    dispatch(clearJwt());
+    localStorage.removeItem("role");
 
-    // Navigate based on role
     if (role === "Student") {
       navigate("/student-signin");
     } else if (role === "Faculty") {
       navigate("/faculty-signin");
     } else {
-      navigate("/"); // Default route in case role is missing
+      navigate("/");
     }
   };
+
+  // Define navigation routes based on roles
+  const studentRoutes = [
+    { name: "Home", href: "/" },
+    { name: "Profile", href: "/profile" },
+    { name: "Internship Form", href: "/internship-form" },
+    { name: "All Internship", href: "/all-internship" },
+    ...(projectId === null
+      ? [{ name: "Project Form", href: "/project-form" }]
+      : []),
+  ];
+
+  const facultyRoutes = [
+    { name: "Home", href: "/" },
+    { name: "Profile", href: "/profile" },
+    { name: "Pending Request", href: "/requests" },
+    { name: "Project Groups", href: "/project-batch" },
+  ];
+
+  const navigation =
+    role === "Student"
+      ? studentRoutes
+      : role === "Faculty"
+      ? facultyRoutes
+      : [];
 
   return (
     <>
