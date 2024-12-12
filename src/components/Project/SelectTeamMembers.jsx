@@ -1,34 +1,51 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { API_BASE_URL } from "../../services/config";
 
-const sampleStudents = [
-  {
-    usn: "2GI21CS111",
-    student_name: "its 111",
-    student_phone: "1111111111",
-    student_email: "ia111@goat.com",
-    student_batch: "2021",
-    project_id: null,
-    leader: false,
-  },
-  {
-    usn: "2GI21CS112",
-    student_name: "its 112",
-    student_phone: "1121111111",
-    student_email: "ia112@goat.com",
-    student_batch: "2021",
-    project_id: null,
-    leader: false,
-  },
-];
 
 const SelectTeamMembers = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Preselected members if any
   const preselectedMembers = location.state?.selected || [];
   const [selectedMembers, setSelectedMembers] = useState(preselectedMembers);
+
+  // Fetch JWT and batch from the Redux store
+  const { jwt, batch } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!jwt || !batch) {
+      setError("JWT or batch is missing. Please log in again.");
+      setLoading(false);
+      return;
+    }
+
+    const fetchStudents = async () => {
+      try {
+        const response = await axios.get(
+          `${API_BASE_URL}/api/projects/available-students/${batch}`,
+          {
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+          }
+        );
+        setStudents(response.data);
+      } catch (err) {
+        setError("Failed to fetch students. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudents();
+  }, [jwt, batch]);
 
   const toggleMemberSelection = (usn) => {
     setSelectedMembers((prevSelected) =>
@@ -43,11 +60,23 @@ const SelectTeamMembers = () => {
     navigate("/project-form");
   };
 
+  if (loading) {
+    return <div className="text-center py-6">Loading students...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-6 text-red-500">
+        {error}
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-3xl mx-auto p-4 bg-white shadow-md rounded-lg">
       <h1 className="text-2xl font-bold mb-6 text-center">Select Team Members</h1>
       <div className="space-y-4">
-        {sampleStudents.map((student) => (
+        {students.map((student) => (
           <div
             key={student.usn}
             className="flex items-center justify-between border-b py-2"

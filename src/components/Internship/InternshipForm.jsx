@@ -46,7 +46,7 @@ const InternshipForm = () => {
           const data = await response.json();
           setFacultyList(data);
         } else {
-          throw new Error("Failed to fetch faculty list");
+          throw new Error("Failed to fetch faculty list"); 
         }
       } catch (err) {
         setError(err.message);
