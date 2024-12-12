@@ -1,46 +1,27 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SnackbarContext } from "../../context/SnackbarProvider";
+import { useSelector, useDispatch } from "react-redux";
+import { setUserProfile } from "../../redux/slices/authSlice"; // Update with your actual path
 
-const sampleGuides = [
-  {
-    faculty_uid: "100",
-    faculty_name: "Zidane",
-  },
-  {
-    faculty_uid: "101",
-    faculty_name: "Pele",
-  },
-  {
-    faculty_uid: "102",
-    faculty_name: "Zaneti",
-  },
-  {
-    faculty_uid: "103",
-    faculty_name: "Vinithkumar",
-  },
-  {
-    faculty_uid: "111",
-    faculty_name: "Docker",
-  },
-  {
-    faculty_uid: "FAC001",
-    faculty_name: "Dr. Smith",
-  },
-];
+
 
 const ProjectForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const preselectedTeam =
     JSON.parse(localStorage.getItem("selectedTeamMembers")) || [];
 
+  const { jwt, usn, email, batch } = useSelector((state) => state.auth);
+
   const { handleSnackbarOpen } = useContext(SnackbarContext);
 
+  const [guides, setGuides] = useState([]);
   const [formData, setFormData] = useState({
     student_project_name: "",
-    academic_year: "",
-    student_project_leader_id: "",
+    academic_year: batch,
+    student_project_leader_id: usn,
     team_members: preselectedTeam,
     student_project_guide_id: "",
     student_project_domain: "",
@@ -51,6 +32,31 @@ const ProjectForm = () => {
     student_project_completion_status: "Pending",
     student_project_url: "",
   });
+
+  useEffect(() => {
+    // Fetch guides from the API
+    const fetchGuides = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5454/api/faculty/users/all",
+          {
+            method: "GET",
+            headers: { Authorization: `Bearer ${jwt}` },
+          }
+        );
+        if (response.status === 202) {
+          const data = await response.json();
+          setGuides(data);
+        } else {
+          throw new Error("Failed to fetch guides");
+        }
+      } catch (error) {
+        console.error(error);
+        handleSnackbarOpen("Failed to load guides", true);
+      }
+    };
+    fetchGuides();
+  }, [jwt]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -86,17 +92,34 @@ const ProjectForm = () => {
     }
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
-    localStorage.removeItem("projectFormData");
-    localStorage.removeItem("selectedTeamMembers");
+    try {
+        const response = await fetch("http://localhost:5454/api/projects/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${jwt}`,
+            },
+            body: JSON.stringify(formData),
+        });
 
-    // setMessage("Submitted");
-    // handleSnackbarOpen("Submitted", false);
-    handleSnackbarOpen("Not submitted Submitted", true);
-    navigate("/");
-  };
+        if (!response.ok) {
+            const errorResponse = await response.json();
+            console.error("Backend Error:", errorResponse);
+            throw new Error("Project creation failed");
+        }
+
+        const data = await response.json(); // Get response data
+        dispatch(setUserProfile({ jwt, email, batch, project_id: data.project_id }));
+        handleSnackbarOpen("Project created successfully!", false);
+        navigate("/student-profile");
+    } catch (error) {
+        console.error("Error in handleSubmit:", error);
+        handleSnackbarOpen("Failed to create project", true);
+    }
+};
+
 
   return (
     <div className="max-w-3xl mx-auto p-4 bg-white shadow-md rounded-lg">
@@ -115,7 +138,7 @@ const ProjectForm = () => {
             placeholder="Enter project name"
           />
         </div>
-        <div>
+        {/* <div>
           <label className="block text-sm font-medium text-gray-700">
             Academic Year
           </label>
@@ -127,8 +150,8 @@ const ProjectForm = () => {
             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
             placeholder="Enter academic year"
           />
-        </div>
-        <div>
+        </div> */}
+        {/* <div>
           <label className="block text-sm font-medium text-gray-700">
             Project Leader USN
           </label>
@@ -140,7 +163,7 @@ const ProjectForm = () => {
             className="mt-1 block w-full border border-gray-300 rounded-md p-2"
             placeholder="Enter leader USN"
           />
-        </div>
+        </div> */}
         <div>
           <button
             type="button"
@@ -167,7 +190,7 @@ const ProjectForm = () => {
             <option value="" disabled>
               Select a guide
             </option>
-            {sampleGuides.map((guide) => (
+            {guides.map((guide) => (
               <option key={guide.faculty_uid} value={guide.faculty_uid}>
                 {guide.faculty_name} ({guide.faculty_uid})
               </option>
