@@ -4,6 +4,8 @@ import { setJwt, setUserProfile } from "../../redux/slices/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { SnackbarContext } from "../../context/SnackbarProvider";
+import { API_BASE_URL } from "../../services/config";
+
 
 const StudentSignIn = () => {
   const [formData, setFormData] = useState({
@@ -44,7 +46,7 @@ const StudentSignIn = () => {
     setError(null);
 
     const response = await axios.post(
-      "http://localhost:5454/auth/student/signin",
+      `${API_BASE_URL}/auth/student/signin`,
       formData
     );
 
@@ -58,7 +60,7 @@ const StudentSignIn = () => {
       console.log("JWT:", jwt);
 
       const profileResponse = await axios.get(
-        "http://localhost:5454/api/student/users/profile",
+        `${API_BASE_URL}/api/student/users/profile`,
         {
           headers: { Authorization: `Bearer ${jwt}` },
         }

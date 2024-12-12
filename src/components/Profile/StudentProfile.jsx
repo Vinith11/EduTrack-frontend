@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { API_BASE_URL } from "../../services/config";
 
 const StudentProfile = () => {
   const [student, setStudent] = useState(null);
@@ -15,7 +16,7 @@ const StudentProfile = () => {
       try {
         // Fetch student profile
         const profileResponse = await axios.get(
-          "http://localhost:5454/api/student/users/profile",
+          `${API_BASE_URL}/api/student/users/profile`,
           {
             headers: { Authorization: `Bearer ${jwt}` },
           }
@@ -27,7 +28,7 @@ const StudentProfile = () => {
         if (profileData.project_id) {
           // Fetch project details if project_id is not null
           const projectResponse = await axios.get(
-            `http://localhost:5454/api/projects/project-by-id/${profileData.project_id}`,
+            `${API_BASE_URL}/api/projects/project-by-id/${profileData.project_id}`,
             {
               headers: { Authorization: `Bearer ${jwt}` },
             }

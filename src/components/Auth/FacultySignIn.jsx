@@ -4,6 +4,9 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import { setJwt, setFacultyProfile } from "../../redux/slices/authSlice"; // Update with your actual path
 import { SnackbarContext } from "../../context/SnackbarProvider";
+import { API_BASE_URL } from "../../services/config";
+
+
 
 const FacultySignIn = () => {
   // State to store form data
@@ -50,7 +53,7 @@ const FacultySignIn = () => {
 
     // Step 1: Faculty Sign-in
     const signinResponse = await axios.post(
-      "http://localhost:5454/auth/faculty/signin",
+      `${API_BASE_URL}/auth/faculty/signin`,
       {
         email: formData.faculty_email,
         password: formData.faculty_password,
@@ -67,7 +70,7 @@ const FacultySignIn = () => {
       console.log("JWT: ", jwt);
       // Step 2: Fetch Faculty Profile
       const profileResponse = await axios.get(
-        "http://localhost:5454/api/faculty/users/profile",
+        `${API_BASE_URL}/api/faculty/users/profile`,
         {
           headers: { Authorization: `Bearer ${jwt}` },
         }

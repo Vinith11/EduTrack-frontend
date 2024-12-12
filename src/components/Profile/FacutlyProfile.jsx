@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { API_BASE_URL } from "../../services/config";
+
+
 
 const FacultyProfile = () => {
   const [faculty, setFaculty] = useState(null); // State to store faculty data
@@ -12,11 +15,12 @@ const FacultyProfile = () => {
   useEffect(() => {
     const fetchFacultyProfile = async () => {
       try {
-        const response = await axios.get("http://localhost:5454/api/faculty/users/profile", {
+        const response = await axios.get(`${API_BASE_URL}/api/faculty/users/profile`, {
           headers: {
             Authorization: `Bearer ${jwt}`, // Include JWT in the Authorization header
           },
         });
+        console.log(response);
         setFaculty(response.data);
       } catch (err) {
         setError("Failed to fetch faculty profile. Please try again.");
