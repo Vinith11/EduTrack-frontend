@@ -1,46 +1,115 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useSelector } from "react-redux";
+import { API_BASE_URL } from "../../services/config";
+import { SnackbarContext } from "../../context/SnackbarProvider";
+import { useNavigate } from "react-router";
+
 
 const InternshipForm = () => {
-  const facultyList = [
-    {
-      facultyUid: "FAC001",
-      facultyName: "Dr. A. Sharma",
-      facultyPhone: "9876543210",
-      facultyEmail: "sharma@example.com",
-      facultyRole: "Professor",
-      facultyPassword: "password123",
-    },
-    {
-      facultyUid: "FAC002",
-      facultyName: "Dr. B. Gupta",
-      facultyPhone: "8765432109",
-      facultyEmail: "gupta@example.com",
-      facultyRole: "Assistant Professor",
-      facultyPassword: "password456",
-    },
-  ];
-
+  const [facultyList, setFacultyList] = useState([]);
   const [formData, setFormData] = useState({
-    studentUsn: "",
     internshipStart: "",
     internshipEnd: "",
     internshipDuration: "",
     internshipCertificate: "",
     internshipLocation: "",
     internshipDomain: "",
-    internshipEvaluationSheet: "",
     internshipCompletionCertificateUrl: "",
     facultyUid: "",
   });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const jwt = useSelector((state) => state.auth.jwt);
+  const usn = useSelector((state) => state.auth.usn);
+  const batch = useSelector((state) => state.auth.batch);
+
+  const navigate = useNavigate();
+
+
+  const { handleSnackbarOpen } = useContext(SnackbarContext);
+
+  // Get faculty
+  useEffect(() => {
+    const fetchFaculty = async () => {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/api/faculty/users/all`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${jwt}`,
+            },
+          }
+        );
+        if (response.status === 202) {
+          const data = await response.json();
+          setFacultyList(data);
+        } else {
+          throw new Error("Failed to fetch faculty list");
+        }
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+    fetchFaculty();
+  }, [jwt]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // Handle form submission
+  const handleSubmit = async (e) => {
     console.log(formData);
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const requestData = {
+      student_usn: usn,
+      academic_year: batch,
+      internship_start: formData.internshipStart,
+      internship_end: formData.internshipEnd,
+      internship_duration: formData.internshipDuration,
+      internship_certificate: formData.internshipCertificate,
+      internship_location: formData.internshipLocation,
+      internship_domain: formData.internshipDomain,
+      internship_evaluation_sheet: null,
+      internship_completion_certificate_url:
+        formData.internshipCompletionCertificateUrl,
+      faculty_uid: formData.facultyUid,
+    };
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/internships/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwt}`,
+          },
+          body: JSON.stringify(requestData),
+        }
+      );
+
+      if (response.status === 201) {
+        const data = await response.json();
+        handleSnackbarOpen("Internship created successfully!", false);
+
+        // Navigate to profile
+        navigate("/all-internship");
+        console.log(data);
+      } else {
+        handleSnackbarOpen(response.data.error , true);
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -49,17 +118,6 @@ const InternshipForm = () => {
         Internship Form
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex flex-col">
-          <label className="font-medium text-gray-600">Student USN</label>
-          <input
-            type="text"
-            name="studentUsn"
-            value={formData.studentUsn}
-            onChange={handleChange}
-            className="mt-2 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder="Enter Student USN"
-          />
-        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex flex-col">
             <label className="font-medium text-gray-600">Start Date</label>
@@ -127,17 +185,6 @@ const InternshipForm = () => {
           />
         </div>
         <div className="flex flex-col">
-          <label className="font-medium text-gray-600">Evaluation Sheet</label>
-          <input
-            type="text"
-            name="internshipEvaluationSheet"
-            value={formData.internshipEvaluationSheet}
-            onChange={handleChange}
-            className="mt-2 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-            placeholder="Enter Evaluation Sheet"
-          />
-        </div>
-        <div className="flex flex-col">
           <label className="font-medium text-gray-600">
             Completion Certificate URL
           </label>
@@ -160,17 +207,19 @@ const InternshipForm = () => {
           >
             <option value="">Select Faculty</option>
             {facultyList.map((faculty) => (
-              <option key={faculty.facultyUid} value={faculty.facultyUid}>
-                {faculty.facultyName}
+              <option key={faculty.faculty_uid} value={faculty.faculty_uid}>
+                {faculty.faculty_name}
               </option>
             ))}
           </select>
         </div>
+        {/* Submit Button */}
         <button
           type="submit"
           className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-400"
+          disabled={loading}
         >
-          Submit
+          {loading ? "Submitting..." : "Submit"}
         </button>
       </form>
     </div>
