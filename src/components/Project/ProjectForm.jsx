@@ -114,6 +114,8 @@ const ProjectForm = () => {
         dispatch(setUserProfile({ jwt, email, batch, project_id: data.project_id }));
         handleSnackbarOpen("Project created successfully!", false);
         navigate("/student-profile");
+        localStorage.removeItem("projectFormData");
+        localStorage.removeItem("selectedTeamMembers");
     } catch (error) {
         console.error("Error in handleSubmit:", error);
         handleSnackbarOpen("Failed to create project", true);

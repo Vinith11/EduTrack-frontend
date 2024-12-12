@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { API_BASE_URL } from "../../services/config";
 
 const StudentProfile = () => {
@@ -8,9 +8,10 @@ const StudentProfile = () => {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const dispatch = useDispatch();
 
-  const jwt = useSelector((state) => state.auth.jwt); // Get JWT from Redux state
-
+  const jwt = useSelector((state) => state.auth.jwt);
+  
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -35,9 +36,12 @@ const StudentProfile = () => {
           );
           setProject(projectResponse.data);
         }
+
+
       } catch (err) {
         setError(
-          err.response?.data?.message || "Failed to fetch profile or project details."
+          err.response?.data?.message ||
+            "Failed to fetch profile or project details."
         );
       } finally {
         setLoading(false);
@@ -123,7 +127,9 @@ const StudentProfile = () => {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500 font-medium">Academic Year:</span>
+                <span className="text-gray-500 font-medium">
+                  Academic Year:
+                </span>
                 <span className="text-gray-800">
                   {project?.academic_year || "N/A"}
                 </span>
@@ -135,7 +141,9 @@ const StudentProfile = () => {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500 font-medium">Faculty Approval:</span>
+                <span className="text-gray-500 font-medium">
+                  Faculty Approval:
+                </span>
                 <span
                   className={`text-gray-800 font-medium ${
                     project?.faculty_approval_status
