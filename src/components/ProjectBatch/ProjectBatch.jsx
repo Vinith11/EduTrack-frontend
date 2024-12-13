@@ -1,116 +1,47 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 const ProjectBatch = () => {
-  // Sample data
-  const data = [
-    {
-      projectId: 1,
-      studentProjectName: "AI Chatbot",
-      academicYear: "2021",
-      studentProjectLeaderId: "STU123",
-      teamMembers: ["STU124", "STU125"],
-      studentProjectGuideId: "FAC001",
-      studentProjectDomain: "Artificial Intelligence",
-      studentProjectDescription:
-        "An AI chatbot to assist with customer queries.",
-      studentProjectType: "Research",
-      studentProjectReport: "report_ai_chatbot.pdf",
-      studentProjectStart: "2024-12-08",
-      studentProjectCompletionStatus: "In Progress",
-      studentProjectUrl: "http://example.com/ai-chatbot",
-      facultyApprovalStatus: true,
-    },
-    {
-      projectId: 2,
-      studentProjectName: "E-commerce Website",
-      academicYear: "2022",
-      studentProjectLeaderId: "STU126",
-      teamMembers: ["STU127", "STU128"],
-      studentProjectGuideId: "FAC002",
-      studentProjectDomain: "Web Development",
-      studentProjectDescription: "An e-commerce platform for local businesses.",
-      studentProjectType: "Development",
-      studentProjectReport: "report_ecommerce.pdf",
-      studentProjectStart: "2024-12-10",
-      studentProjectCompletionStatus: "Pending",
-      studentProjectUrl: "http://example.com/ecommerce",
-      facultyApprovalStatus: true,
-    },
-    {
-      projectId: 2,
-      studentProjectName: "E-commerce Website",
-      academicYear: "2022",
-      studentProjectLeaderId: "STU126",
-      teamMembers: ["STU127", "STU128"],
-      studentProjectGuideId: "FAC002",
-      studentProjectDomain: "Web Development",
-      studentProjectDescription: "An e-commerce platform for local businesses.",
-      studentProjectType: "Development",
-      studentProjectReport: "report_ecommerce.pdf",
-      studentProjectStart: "2024-12-10",
-      studentProjectCompletionStatus: "Pending",
-      studentProjectUrl: "http://example.com/ecommerce",
-      facultyApprovalStatus: true,
-    },
-    {
-      projectId: 2,
-      studentProjectName: "E-commerce Website",
-      academicYear: "2022",
-      studentProjectLeaderId: "STU126",
-      teamMembers: ["STU127", "STU128"],
-      studentProjectGuideId: "FAC002",
-      studentProjectDomain: "Web Development",
-      studentProjectDescription: "An e-commerce platform for local businesses.",
-      studentProjectType: "Development",
-      studentProjectReport: "report_ecommerce.pdf",
-      studentProjectStart: "2024-12-10",
-      studentProjectCompletionStatus: "Pending",
-      studentProjectUrl: "http://example.com/ecommerce",
-      facultyApprovalStatus: true,
-    },
-    {
-      projectId: 2,
-      studentProjectName: "E-commerce Website",
-      academicYear: "2022",
-      studentProjectLeaderId: "STU126",
-      teamMembers: ["STU127", "STU128"],
-      studentProjectGuideId: "FAC002",
-      studentProjectDomain: "Web Development",
-      studentProjectDescription: "An e-commerce platform for local businesses.",
-      studentProjectType: "Development",
-      studentProjectReport: "report_ecommerce.pdf",
-      studentProjectStart: "2024-12-10",
-      studentProjectCompletionStatus: "Pending",
-      studentProjectUrl: "http://example.com/ecommerce",
-      facultyApprovalStatus: true,
-    },
-    {
-      projectId: 3,
-      studentProjectName: "Health Tracker App",
-      academicYear: "2023",
-      studentProjectLeaderId: "STU129",
-      teamMembers: ["STU130", "STU131"],
-      studentProjectGuideId: "FAC003",
-      studentProjectDomain: "Mobile Development",
-      studentProjectDescription:
-        "A health tracker app for monitoring fitness goals.",
-      studentProjectType: "Development",
-      studentProjectReport: "report_health_tracker.pdf",
-      studentProjectStart: "2024-12-15",
-      studentProjectCompletionStatus: "Not Started",
-      studentProjectUrl: "http://example.com/health-tracker",
-      facultyApprovalStatus: true,
-    },
-  ];
-
   const [selectedYear, setSelectedYear] = useState("");
   const [filteredProjects, setFilteredProjects] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleFilter = () => {
-    const result = data.filter(
-      (project) => project.academicYear === selectedYear
-    );
-    setFilteredProjects(result);
+  // Access JWT and faculty_uid from Redux state
+  const { jwt, faculty_uid } = useSelector((state) => state.auth);
+
+  const handleFilter = async () => {
+    if (!selectedYear) {
+      setError("Please select an academic year.");
+      return;
+    }
+    if (!jwt || !faculty_uid) {
+      setError("Authentication details are missing.");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await axios.get(
+        `http://localhost:5454/api/projects/faculty-projects/${faculty_uid}/${selectedYear}`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setFilteredProjects(response.data);
+      }
+    } catch (err) {
+      setError("Failed to fetch projects. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const years = [2021, 2022, 2023, 2024];
@@ -145,36 +76,40 @@ const ProjectBatch = () => {
         </button>
       </div>
 
+      {/* Display Loading or Error */}
+      {loading && <p className="text-blue-600 text-center">Loading...</p>}
+      {error && <p className="text-red-600 text-center">{error}</p>}
+
       {/* Display Filtered Projects */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredProjects.length > 0 ? (
           filteredProjects.map((project) => (
             <div
-              key={project.projectId}
+              key={project.project_id}
               className="bg-white shadow-md rounded-lg p-4 border border-gray-200"
             >
               <h2 className="text-lg font-semibold text-gray-800">
-                {project.studentProjectName}
+                {project.student_project_name}
               </h2>
               <p className="text-sm text-gray-600">
-                <strong>Leader ID:</strong> {project.studentProjectLeaderId}
+                <strong>Leader ID:</strong> {project.student_project_leader_id}
               </p>
               <p className="text-sm text-gray-600">
-                <strong>Domain:</strong> {project.studentProjectDomain}
+                <strong>Domain:</strong> {project.student_project_domain}
               </p>
               <p className="text-sm text-gray-600">
                 <strong>Description:</strong>{" "}
-                {project.studentProjectDescription}
+                {project.student_project_description}
               </p>
               <p className="text-sm text-gray-600">
-                <strong>Start Date:</strong> {project.studentProjectStart}
+                <strong>Start Date:</strong> {project.student_project_start}
               </p>
               <p className="text-sm text-gray-600">
                 <strong>Status:</strong>{" "}
-                {project.studentProjectCompletionStatus}
+                {project.student_project_completion_status}
               </p>
               <a
-                href={project.studentProjectUrl}
+                href={project.student_project_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-500 hover:underline mt-2 block"
@@ -184,9 +119,11 @@ const ProjectBatch = () => {
             </div>
           ))
         ) : (
-          <p className="text-gray-600 text-center col-span-full">
-            No projects available.
-          </p>
+          !loading && (
+            <p className="text-gray-600 text-center col-span-full">
+              No projects available.
+            </p>
+          )
         )}
       </div>
     </div>

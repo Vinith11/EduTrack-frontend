@@ -1,117 +1,81 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+import { API_BASE_URL } from "../../services/config";
+
 
 const ApproveRequests = () => {
-  // Sample JSON data
-  const data = [
-    {
-      projectId: 1,
-      studentProjectName: "AI Chatbot",
-      academicYear: "2024-2025",
-      studentProjectLeaderId: "STU123",
-      teamMembers: ["STU124", "STU125"],
-      studentProjectGuideId: "FAC001",
-      studentProjectDomain: "Artificial Intelligence",
-      studentProjectDescription: "An AI chatbot to assist with customer queries.",
-      studentProjectType: "Research",
-      studentProjectReport: "report_ai_chatbot.pdf",
-      studentProjectStart: "2024-12-08",
-      studentProjectCompletionStatus: "In Progress",
-      studentProjectUrl: "http://example.com/ai-chatbot",
-      facultyApprovalStatus: false,
-    },
-    {
-        projectId: 1,
-        studentProjectName: "AI Chatbot",
-        academicYear: "2024-2025",
-        studentProjectLeaderId: "STU123",
-        teamMembers: ["STU124", "STU125"],
-        studentProjectGuideId: "FAC001",
-        studentProjectDomain: "Artificial Intelligence",
-        studentProjectDescription: "An AI chatbot to assist with customer queries.",
-        studentProjectType: "Research",
-        studentProjectReport: "report_ai_chatbot.pdf",
-        studentProjectStart: "2024-12-08",
-        studentProjectCompletionStatus: "In Progress",
-        studentProjectUrl: "http://example.com/ai-chatbot",
-        facultyApprovalStatus: false,
-      },
-    {
-      projectId: 2,
-      studentProjectName: "E-commerce Website",
-      academicYear: "2024-2025",
-      studentProjectLeaderId: "STU126",
-      teamMembers: ["STU127", "STU128"],
-      studentProjectGuideId: "FAC002",
-      studentProjectDomain: "Web Development",
-      studentProjectDescription: "An e-commerce platform for local businesses.",
-      studentProjectType: "Development",
-      studentProjectReport: "report_ecommerce.pdf",
-      studentProjectStart: "2024-12-10",
-      studentProjectCompletionStatus: "Pending",
-      studentProjectUrl: "http://example.com/ecommerce",
-      facultyApprovalStatus: false,
-    },
-    {
-      projectId: 3,
-      studentProjectName: "Health Tracker App",
-      academicYear: "2024-2025",
-      studentProjectLeaderId: "STU129",
-      teamMembers: ["STU130", "STU131"],
-      studentProjectGuideId: "FAC003",
-      studentProjectDomain: "Mobile Development",
-      studentProjectDescription: "A health tracker app for monitoring fitness goals.",
-      studentProjectType: "Development",
-      studentProjectReport: "report_health_tracker.pdf",
-      studentProjectStart: "2024-12-15",
-      studentProjectCompletionStatus: "Not Started",
-      studentProjectUrl: "http://example.com/health-tracker",
-      facultyApprovalStatus: false,
-    },
-  ];
+  const [projects, setProjects] = useState([]);
+  const jwt = useSelector((state) => state.auth.jwt);
 
-  // Handlers for approve and decline actions
-  const handleApprove = (project) => {
-    console.log("Approved:", project);
-  };
+  // Fetch projects data on mount
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/projects/pending-projects`, {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        });
+        setProjects(response.data);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      }
+    };
 
-  const handleDecline = (project) => {
-    console.log("Declined:", project);
+    fetchProjects();
+  }, [jwt]);
+
+  // Handle approve or decline
+  const handleApproval = async (projectId, approvalStatus) => {
+    try {
+      await axios.put(`http://localhost:5454/api/projects/approve/${projectId}?approvalStatus=${approvalStatus}`, {}, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      // Refresh projects after approval or decline
+      const updatedProjects = projects.filter((project) => project.project_id !== projectId);
+      setProjects(updatedProjects);
+    } catch (error) {
+      console.error('Error updating project approval status:', error);
+    }
   };
 
   return (
-    <div className="p-6  min-h-screen">
+    <div className="p-6 min-h-screen">
       <h1 className="text-2xl font-bold text-center mb-6">Project Approval Requests</h1>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {data.map((project) => (
+        {projects.map((project) => (
           <div
-            key={project.projectId}
+            key={project.project_id}
             className="bg-white shadow-md rounded-lg p-4 border border-gray-200"
           >
-            <h2 className="text-lg font-semibold text-gray-800">{project.studentProjectName}</h2>
+            <h2 className="text-lg font-semibold text-gray-800">{project.student_project_name}</h2>
             <p className="text-sm text-gray-600">
-              <strong>Leader ID:</strong> {project.studentProjectLeaderId}
+              <strong>Leader ID:</strong> {project.student_project_leader_id}
             </p>
             <p className="text-sm text-gray-600">
-              <strong>Domain:</strong> {project.studentProjectDomain}
+              <strong>Domain:</strong> {project.student_project_domain}
             </p>
             <p className="text-sm text-gray-600">
-              <strong>Description:</strong> {project.studentProjectDescription}
+              <strong>Description:</strong> {project.student_project_description}
             </p>
             <p className="text-sm text-gray-600">
-              <strong>Start Date:</strong> {project.studentProjectStart}
+              <strong>Start Date:</strong> {project.student_project_start}
             </p>
             <p className="text-sm text-gray-600">
-              <strong>Status:</strong> {project.studentProjectCompletionStatus}
+              <strong>Status:</strong> {project.student_project_completion_status}
             </p>
             <div className="flex justify-between mt-4">
               <button
-                onClick={() => handleApprove(project)}
+                onClick={() => handleApproval(project.project_id, true)}
                 className="bg-green-500 text-white py-1 px-3 rounded hover:bg-green-600"
               >
                 Approve
               </button>
               <button
-                onClick={() => handleDecline(project)}
+                onClick={() => handleApproval(project.project_id, false)}
                 className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600"
               >
                 Decline

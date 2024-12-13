@@ -11,11 +11,12 @@ const AllInternship = () => {
 
   // Get JWT from Redux state
   const jwt = useSelector((state) => state.auth.jwt);
+  const usn = useSelector((state) => state.auth.usn);
 
   useEffect(() => {
     const fetchInternships = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/api/internships/all`, {
+        const response = await axios.get(`${API_BASE_URL}/api/internships/student/${usn}`, {
           headers: {
             Authorization: `Bearer ${jwt}`,
           },
