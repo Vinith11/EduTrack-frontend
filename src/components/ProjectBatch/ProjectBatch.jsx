@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { API_BASE_URL } from "../../services/config";
+
 
 const ProjectBatch = () => {
   const [selectedYear, setSelectedYear] = useState("");
@@ -26,7 +28,7 @@ const ProjectBatch = () => {
 
     try {
       const response = await axios.get(
-        `http://localhost:5454/api/projects/faculty-projects/${faculty_uid}/${selectedYear}`,
+        `${API_BASE_URL}/api/projects/faculty-projects/${faculty_uid}/${selectedYear}`,
         {
           headers: {
             Authorization: `Bearer ${jwt}`,

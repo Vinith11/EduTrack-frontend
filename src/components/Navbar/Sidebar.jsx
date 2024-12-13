@@ -41,6 +41,7 @@ const Sidebar = () => {
     { name: "Profile", href: "/profile" },
     { name: "Pending Request", href: "/requests" },
     { name: "Project Groups", href: "/project-batch" },
+    { name: "All Interhsip by Studnets", href: "/all-internship-by-batch" },
   ];
 
   const navigation =

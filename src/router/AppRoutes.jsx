@@ -18,6 +18,7 @@ import ProjectForm from "../components/Project/ProjectForm.jsx";
 import SelectTeamMembers from "../components/Project/SelectTeamMembers.jsx";
 import StudentProfile from "../components/Profile/StudentProfile.jsx";
 import FacutlyProfile from "../components/Profile/FacutlyProfile.jsx";
+import AllInternshipByBatch from "../components/Internship/AllInternshipByBatch.jsx";
 
 
 const AppRoutes = () => {
@@ -46,6 +47,7 @@ const AppRoutes = () => {
           <Route path="/requests" element={<ApproveRequests />} />
           <Route path="/project-batch" element={<ProjectBatch />} />
           <Route path="/profile" element={<FacutlyProfile />} />
+          <Route path="/all-internship-by-batch" element={<AllInternshipByBatch />} />
         </Route>
 
         {/* Protected Routes for Students */}
