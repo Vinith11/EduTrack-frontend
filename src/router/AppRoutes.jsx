@@ -19,6 +19,7 @@ import SelectTeamMembers from "../components/Project/SelectTeamMembers.jsx";
 import StudentProfile from "../components/Profile/StudentProfile.jsx";
 import FacutlyProfile from "../components/Profile/FacutlyProfile.jsx";
 import AllInternshipByBatch from "../components/Internship/AllInternshipByBatch.jsx";
+import AllProjectBatch from "../components/ProjectBatch/AllProjectBatch.jsx";
 
 
 const AppRoutes = () => {
@@ -46,6 +47,7 @@ const AppRoutes = () => {
           <Route path="/" element={<App />} />
           <Route path="/requests" element={<ApproveRequests />} />
           <Route path="/project-batch" element={<ProjectBatch />} />
+          <Route path="/all-project-batch" element={<AllProjectBatch />} />
           <Route path="/profile" element={<FacutlyProfile />} />
           <Route path="/all-internship-by-batch" element={<AllInternshipByBatch />} />
         </Route>
