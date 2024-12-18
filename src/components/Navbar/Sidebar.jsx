@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { clearJwt } from "../../redux/slices/authSlice";
-
+import { Menu, X, Home, LogOut } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Sidebar = () => {
   const [showSidebar, setShowSidebar] = useState(false);
@@ -10,7 +11,6 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const role = useSelector((state) => state.auth.role);
   const projectId = useSelector((state) => state.auth.project_id);
-
 
   const handleSignOut = () => {
     dispatch(clearJwt());
@@ -27,85 +27,96 @@ const Sidebar = () => {
 
   // Define navigation routes based on roles
   const studentRoutes = [
-    { name: "Home", href: "/" },
-    { name: "Profile", href: "/student-profile" },
-    { name: "Internship Form", href: "/internship-form" },
-    { name: "All Internship", href: "/all-internship" },
+    { name: "Home", href: "/", icon: <Home className="w-5 h-5 text-blue-400" /> },
+    { name: "Profile", href: "/student-profile", icon: <Home className="w-5 h-5 text-blue-400" /> },
+    { name: "Internship Form", href: "/internship-form", icon: <Home className="w-5 h-5 text-blue-400" /> },
+    { name: "All Internship", href: "/all-internship", icon: <Home className="w-5 h-5 text-blue-400" /> },
     ...(projectId === null
-      ? [{ name: "Project Form", href: "/project-form" }]
+      ? [{ name: "Project Form", href: "/project-form", icon: <Home className="w-5 h-5 text-blue-400" /> }]
       : []),
   ];
 
   const facultyRoutes = [
-    { name: "Home", href: "/" },
-    { name: "Profile", href: "/profile" },
-    { name: "Pending Request", href: "/requests" },
-    { name: "Project Groups", href: "/project-batch" },
-    { name: "All Interhsip by Studnets", href: "/all-internship-by-batch" },
-    { name: "All Projects by Batch", href: "/all-project-batch" }
+    { name: "Home", href: "/", icon: <Home className="w-5 h-5 text-blue-400" /> },
+    { name: "Profile", href: "/profile", icon: <Home className="w-5 h-5 text-blue-400" /> },
+    { name: "Pending Request", href: "/requests", icon: <Home className="w-5 h-5 text-blue-400" /> },
+    { name: "Project Groups", href: "/project-batch", icon: <Home className="w-5 h-5 text-blue-400" /> },
+    { name: "All Internship by Students", href: "/all-internship-by-batch", icon: <Home className="w-5 h-5 text-blue-400" /> },
+    { name: "All Projects by Batch", href: "/all-project-batch", icon: <Home className="w-5 h-5 text-blue-400" /> }
   ];
 
-  const navigation =
-    role === "Student"
-      ? studentRoutes
-      : role === "Faculty"
-      ? facultyRoutes
-      : [];
+  const navigation = role === "Student" ? studentRoutes : role === "Faculty" ? facultyRoutes : [];
 
   return (
     <>
-      {showSidebar ? (
-        <button
-          className="flex text-4xl text-white items-center cursor-pointer fixed left-10 top-6 z-50"
-          onClick={() => setShowSidebar(!showSidebar)}
-        >
-          x
-        </button>
-      ) : (
-        <div className="">
-          <svg
-            onClick={() => setShowSidebar(!showSidebar)}
-            className="z-30 flex items-center cursor-pointer top-6 px-2"
-            fill="#2563EB"
-            viewBox="0 0 100 80"
-            width="40"
-            height="40"
-          >
-            <rect width="100" height="10"></rect>
-            <rect y="30" width="100" height="10"></rect>
-            <rect y="60" width="100" height="10"></rect>
-          </svg>
-        </div>
-      )}
+      {/* Overlay */}
+      <AnimatePresence>
+        {showSidebar && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowSidebar(false)}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+          />
+        )}
+      </AnimatePresence>
 
-      <div
-        className={`top-0 left-0 w-[20vw] max-sm:w-[55vw] bg-blue-600 p-10 pl-15 text-white fixed h-full z-40 ease-in-out duration-300 ${
-          showSidebar ? "translate-x-0" : "-translate-x-full"
-        }`}
+      {/* Sidebar */}
+      <motion.div
+        initial={{ x: -320 }}
+        animate={{ x: showSidebar ? 0 : -320 }}
+        transition={{ type: "spring", damping: 20 }}
+        className="fixed top-0 left-0 h-screen w-80 bg-gray-900 shadow-2xl z-50 border-r border-gray-800 overflow-y-auto"
       >
-        <div className="mt-20">
-          <>
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className="flex flex-col py-3 text-l font-semibold text-white"
-                onClick={() => setShowSidebar(!showSidebar)}
-              >
-                {item.name}
-              </Link>
-            ))}
-            <button
-              onClick={() => {
-                setShowSidebar(!showSidebar);
-                handleSignOut();
-              }}
-              className="absolute bottom-0 left-0 w-full py-3 text-lg font-semibold text-white bg-blue-500 hover:bg-blue-600"
-            >
-              Log Out
+        {/* Sidebar Header */}
+        <div className="sticky top-0 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800 p-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-500/10 rounded-lg">
+                <Home className="w-6 h-6 text-blue-400" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-100">{role} Portal</h2>
+            </div>
+            <button onClick={() => setShowSidebar(false)} className="p-2 rounded-lg hover:bg-gray-800">
+              <X className="w-6 h-6 text-gray-400" />
             </button>
-          </>
+          </div>
         </div>
+
+        {/* Navigation */}
+        <div className="p-6 space-y-6">
+          {navigation.map((item, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                setShowSidebar(false);
+                navigate(item.href);
+              }}
+              className="flex items-center gap-3 w-full p-3 text-gray-300 hover:bg-gray-800 rounded-lg transition-all duration-200 group"
+            >
+              <span className="transition-transform duration-200 group-hover:scale-110">{item.icon}</span>
+              <span className="font-medium">{item.name}</span>
+            </button>
+          ))}
+
+          {/* Logout Button */}
+          <button
+            onClick={handleSignOut}
+            className="flex items-center gap-3 w-full p-3 mt-6 text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200 group"
+          >
+            <LogOut className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" />
+            <span className="font-medium">Logout</span>
+          </button>
+        </div>
+      </motion.div>
+
+      {/* Header */}
+      <div className="sticky top-0 z-30 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800 px-6 py-4 flex items-center justify-between">
+        <button onClick={() => setShowSidebar(true)} className="p-2 hover:bg-gray-800 rounded-lg transition-colors">
+          <Menu className="w-6 h-6 text-gray-400" />
+        </button>
+        <h1 className="text-xl font-bold text-gray-100">Workflow</h1>
       </div>
     </>
   );
