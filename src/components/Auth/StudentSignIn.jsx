@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { SnackbarContext } from "../../context/SnackbarProvider";
 import { API_BASE_URL } from "../../services/config";
-
+import toast, { Toaster } from 'react-hot-toast';
 
 const StudentSignIn = () => {
   const [formData, setFormData] = useState({
@@ -56,6 +56,12 @@ const StudentSignIn = () => {
       const { jwt } = response.data;
       // Dispatch JWT to Redux
       dispatch(setJwt(jwt));
+      toast.success('Faculty registered successfully!', {
+        style: {
+          background: '#333',
+          color: '#fff'
+        }
+      });
 
       console.log("JWT:", jwt);
 
@@ -76,7 +82,7 @@ const StudentSignIn = () => {
       // Dispatch profile data to Redux
       dispatch(setUserProfile({ usn, email, batch, project_id }));
 
-      handleSnackbarOpen("Login Successfull", false);
+
 
       // Navigate to profile
       navigate("/student-profile");

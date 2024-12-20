@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { clearJwt } from "../../redux/slices/authSlice";
-import { Menu, X, Home, LogOut } from "lucide-react";
+import { Menu, X, Home, LogOut, UserCheck, Users } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Sidebar = () => {
@@ -41,8 +41,8 @@ const Sidebar = () => {
     { name: "Profile", href: "/profile", icon: <Home className="w-5 h-5 text-blue-400" /> },
     { name: "Pending Request", href: "/requests", icon: <Home className="w-5 h-5 text-blue-400" /> },
     { name: "Project Groups", href: "/project-batch", icon: <Home className="w-5 h-5 text-blue-400" /> },
-    { name: "All Internship by Students", href: "/all-internship-by-batch", icon: <Home className="w-5 h-5 text-blue-400" /> },
-    { name: "All Projects by Batch", href: "/all-project-batch", icon: <Home className="w-5 h-5 text-blue-400" /> }
+    { name: "All Internship by Students", href: "/all-internship-by-batch", icon: <UserCheck className="w-5 h-5 text-blue-400" /> },
+    { name: "All Projects by Batch", href: "/all-project-batch", icon: <Users className="w-5 h-5 text-blue-400" /> }
   ];
 
   const navigation = role === "Student" ? studentRoutes : role === "Faculty" ? facultyRoutes : [];
