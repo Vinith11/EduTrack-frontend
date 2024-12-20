@@ -13,9 +13,6 @@ const Sidebar = () => {
   const projectId = useSelector((state) => state.auth.project_id);
 
   const handleSignOut = () => {
-    dispatch(clearJwt());
-    localStorage.removeItem("role");
-
     if (role === "Student") {
       navigate("/student-signin");
     } else if (role === "Faculty") {
@@ -23,6 +20,8 @@ const Sidebar = () => {
     } else {
       navigate("/");
     }
+    dispatch(clearJwt());
+    localStorage.removeItem("role");
   };
 
   // Define navigation routes based on roles
