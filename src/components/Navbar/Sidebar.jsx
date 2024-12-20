@@ -36,7 +36,6 @@ const Sidebar = () => {
   ];
 
   const facultyRoutes = [
-    { name: "Home", href: "/", icon: <Home className="w-5 h-5 text-blue-400" /> },
     { name: "Profile", href: "/profile", icon: <Home className="w-5 h-5 text-blue-400" /> },
     { name: "Pending Request", href: "/requests", icon: <Home className="w-5 h-5 text-blue-400" /> },
     { name: "Project Groups", href: "/project-batch", icon: <Home className="w-5 h-5 text-blue-400" /> },

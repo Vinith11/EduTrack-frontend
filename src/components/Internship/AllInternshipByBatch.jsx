@@ -35,120 +35,117 @@ const AllInternshipByBatch = () => {
         }
       );
 
-      console.log(response);
-
       if (response.status === 200) {
         setInternships(response.data);
+        console.log(response.data);
       } else if (response.status === 404) {
         setInternships([]);
       }
     } catch (err) {
-      setError("Failed to fetch projects. Please try again later.");
+      setError("Failed to fetch internships. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
-  const years = [2021, 2022, 2023];
+  const years = [2021, 2022, 2023, 2024, 2025];
 
   return (
-    <div className="p-6 min-h-screen">
-      <h1 className="text-2xl font-bold text-center mb-6">
-        Filter Projects by Academic Year
-      </h1>
+    <div className="min-h-screen bg-gray-900 text-gray-100">
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold text-center text-blue-400 mb-6">
+          Filter Internships by Academic Year
+        </h1>
 
-      {/* Dropdown and Search Button */}
-      <div className="flex flex-col items-center md:flex-row md:justify-center gap-4 mb-6">
-        <select
-          value={selectedYear}
-          onChange={(e) => setSelectedYear(e.target.value)}
-          className="border border-gray-300 rounded-md p-2 w-full md:w-64"
-        >
-          <option value="" disabled>
-            Select Academic Year
-          </option>
-          {years.map((year) => (
-            <option key={year} value={year.toString()}>
-              {year}
+        {/* Dropdown and Search Button */}
+        <div className="flex flex-col items-center md:flex-row md:justify-center gap-4 mb-6">
+          <select
+            value={selectedYear}
+            onChange={(e) => setSelectedYear(e.target.value)}
+            className="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-gray-100"
+          >
+            <option value="" disabled>
+              Select Academic Year
             </option>
-          ))}
-        </select>
-        <button
-          onClick={handleFilter}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Search
-        </button>
-      </div>
-
-      {/* Display Loading or Error */}
-      {loading && <p className="text-blue-600 text-center">Loading...</p>}
-      {error && <p className="text-red-600 text-center">{error}</p>}
-
-      {/* Display Filtered Projects */}
-      {internships.length === 0 ? (
-        <p className="text-center text-gray-600">No internships available.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {internships.map((internship) => (
-            <div
-              key={internship.internship_id}
-              className="p-4 bg-white shadow-md rounded-lg border border-gray-200"
-            >
-              <h3 className="text-xl font-bold text-blue-600 mb-2">
-                {internship.student_usn}
-              </h3>
-              <div className="text-gray-700 space-y-1">
-                <p>
-                  <span className="font-semibold">Start Date:</span>{" "}
-                  {internship.internship_start}
-                </p>
-                <p>
-                  <span className="font-semibold">End Date:</span>{" "}
-                  {internship.internship_end}
-                </p>
-                <p>
-                  <span className="font-semibold">Duration:</span>{" "}
-                  {internship.internship_duration}
-                </p>
-                <p>
-                  <span className="font-semibold">Location:</span>{" "}
-                  {internship.internship_location}
-                </p>
-                <p>
-                  <span className="font-semibold">Domain:</span>{" "}
-                  {internship.internship_domain}
-                </p>
-                <p>
-                  <span className="font-semibold">Certificate:</span>{" "}
-                  {internship.internship_certificate || "Not Provided"}
-                </p>
-                <p>
-                  <span className="font-semibold">
-                    Completion Certificate URL:
-                  </span>{" "}
-                  {internship.internship_completion_certificate_url ? (
-                    <a
-                      href={internship.internship_completion_certificate_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 underline"
-                    >
-                      View Certificate
-                    </a>
-                  ) : (
-                    "Not Available"
-                  )}
-                </p>
-                <p>
-                  <span className="font-semibold">Faculty UID:</span>{" "}
-                  {internship.faculty_uid || "N/A"}
-                </p>
-              </div>
-            </div>
-          ))}
+            {years.map((year) => (
+              <option key={year} value={year.toString()}>
+                {year}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={handleFilter}
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+          >
+            Search
+          </button>
         </div>
-      )}
+
+        {/* Display Loading or Error */}
+        {loading && <p className="text-blue-400 text-center">Loading...</p>}
+        {error && <p className="text-red-500 text-center">{error}</p>}
+
+        {/* Display Filtered Internships */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {internships.length > 0
+            ? internships.map((internship) => (
+                <div
+                  key={internship.internship_id}
+                  className="bg-gray-800 shadow-lg rounded-xl p-6 border border-gray-700 transition-transform transform hover:scale-105"
+                >
+                  <h2 className="text-2xl font-bold text-green-400 mb-4">
+                    {internship.internship_evaluation_sheet || "Unknown Company"}
+                  </h2>
+                  <h2 className="text-2xl font-bold text-green-400 mb-4">
+                    {internship.student_usn }
+                  </h2>
+                  <p className="text-sm ">
+                    <strong>Start Date:</strong> {internship.internship_start}
+                  </p>
+                  <p className="text-sm ">
+                    <strong>End Date:</strong> {internship.internship_end}
+                  </p>
+                  <p className="text-sm ">
+                    <strong>Duration:</strong> {internship.internship_duration}
+                  </p>
+                  <p className="text-sm ">
+                    <strong>Location:</strong> {internship.internship_location}
+                  </p>
+                  <p className="text-sm ">
+                    <strong>Domain:</strong> {internship.internship_domain}
+                  </p>
+                  <p className="text-sm ">
+                    <strong>Certificate:</strong>{" "}
+                    {internship.internship_certificate || "Not Provided"}
+                  </p>
+                  <p className="text-sm ">
+                    <strong>Completion Certificate URL:</strong>{" "}
+                    {internship.internship_completion_certificate_url ? (
+                      <a
+                        href={internship.internship_completion_certificate_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 hover:underline"
+                      >
+                        View Certificate
+                      </a>
+                    ) : (
+                      "Not Available"
+                    )}
+                  </p>
+                  <p className="text-sm ">
+                    <strong>Faculty UID:</strong>{" "}
+                    {internship.faculty_uid || "N/A"}
+                  </p>
+                </div>
+              ))
+            : !loading && (
+                <p className=" text-center col-span-full">
+                  No internships available.
+                </p>
+              )}
+        </div>
+      </div>
     </div>
   );
 };
