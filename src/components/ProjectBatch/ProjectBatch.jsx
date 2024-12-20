@@ -46,7 +46,7 @@ const ProjectBatch = () => {
     }
   };
 
-  const years = [2021, 2022, 2023, 2024];
+  const years = [2021, 2022, 2023, 2024, 2025];
 
   return (
     <div className="p-6 min-h-screen">
