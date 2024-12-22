@@ -3,35 +3,21 @@ import { useDispatch } from "react-redux";
 import { setJwt, setUserProfile } from "../../redux/slices/authSlice";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { SnackbarContext } from "../../context/SnackbarProvider";
 import { API_BASE_URL } from "../../services/config";
 import toast, { Toaster } from 'react-hot-toast';
+import { motion } from "framer-motion";
+import { LogIn, UserPlus, AtSign, Key, ChevronRight, GraduationCap, School } from "lucide-react";
+import "./Signin.css";
 
 const StudentSignIn = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSignUpMode, setIsSignUpMode] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const { handleSnackbarOpen } = useContext(SnackbarContext);
-
-  const inputFields = [
-    {
-      id: "email",
-      label: "Email*",
-      type: "email",
-      placeholder: "mail@loopple.com",
-    },
-    {
-      id: "password",
-      label: "Password*",
-      type: "password",
-      placeholder: "Enter a password",
-    },
-  ];
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -43,111 +29,139 @@ const StudentSignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
+    setIsLoading(true);
 
-    const response = await axios.post(
-      `${API_BASE_URL}/auth/student/signin`,
-      formData
-    );
-
-    console.log(response);
-
-    if (response.status == 200) {
-      const { jwt } = response.data;
-      // Dispatch JWT to Redux
-      dispatch(setJwt(jwt));
-      toast.success('Faculty registered successfully!', {
-        style: {
-          background: '#333',
-          color: '#fff'
-        }
-      });
-
-      console.log("JWT:", jwt);
-
-      const profileResponse = await axios.get(
-        `${API_BASE_URL}/api/student/users/profile`,
-        {
-          headers: { Authorization: `Bearer ${jwt}` },
-        }
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/auth/student/signin`,
+        formData
       );
 
-      const {
-        usn,
-        student_email: email,
-        student_batch: batch,
-        project_id,
-      } = profileResponse.data;
+      if (response.status === 200) {
+        const { jwt } = response.data;
 
-      // Dispatch profile data to Redux
-      dispatch(setUserProfile({ usn, email, batch, project_id }));
+        dispatch(setJwt(jwt));
 
+        const profileResponse = await axios.get(
+          `${API_BASE_URL}/api/student/users/profile`,
+          { headers: { Authorization: `Bearer ${jwt}` } }
+        );
 
+        const { usn, student_email: email, student_batch: batch, project_id } =
+          profileResponse.data;
 
-      // Navigate to profile
-      navigate("/student-profile");
-    } else {
-      const errorMessage =
-        response.data.error || "An error occurred. Please try again.";
-      setError(errorMessage);
-      handleSnackbarOpen(errorMessage, true);
+        dispatch(setUserProfile({ usn, email, batch, project_id }));
+        toast.success("Sign In Successful!");
+        navigate("/student-profile");
+      } else {
+        toast.error("Sign In Failed! Please check your credentials.");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred during Sign In. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="bg-white rounded-lg py-5">
-      <div className="container flex flex-col mx-auto bg-white rounded-lg pt-12 my-5">
-        <div className="flex justify-center w-full h-full my-auto xl:gap-14 lg:justify-normal md:gap-5 draggable">
-          <div className="flex items-center justify-center w-full lg:p-12">
-            <div className="flex items-center xl:p-10">
-              <form
-                className="flex flex-col w-full h-full pb-6 text-center bg-white rounded-3xl"
-                onSubmit={handleSubmit}
-              >
-                <h3 className="mb-3 text-4xl font-extrabold text-dark-grey-900">
-                  Student Sign In
-                </h3>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100">
+      <Toaster position="top-right" />
+      <div className="container mx-auto px-4 py-16">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-4xl mx-auto"
+        >
+          <div className="bg-gray-800/50 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-gray-700/50 hover:border-gray-600/50 transition-all">
+            <div className="grid md:grid-cols-2 gap-12">
+              {/* Sign In Form */}
+              <div className={`space-y-6 ${isSignUpMode ? "hidden md:block" : ""}`}>
+                <div className="text-center">
+                  <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                    <GraduationCap className="w-16 h-16 text-blue-500 mx-auto mb-4" />
+                  </motion.div>
+                  <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                    Student Sign In
+                  </h2>
+                  <p className="text-gray-400 mt-2">
+                    Welcome back, please sign in to continue
+                  </p>
+                </div>
 
-                {error && <p className="text-red-500">{error}</p>}
-
-                {inputFields.map((field, index) => (
-                  <div key={index} className="mb-7">
-                    <label
-                      htmlFor={field.id}
-                      className="mb-2 text-sm text-start text-grey-900 block"
-                    >
-                      {field.label}
-                    </label>
-                    <input
-                      id={field.id}
-                      type={field.type}
-                      placeholder={field.placeholder}
-                      value={formData[field.id]}
-                      onChange={handleInputChange}
-                      className="flex items-center w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
-                    />
+                {isLoading ? (
+                  <div className="space-y-4 animate-pulse">
+                    <div className="h-12 bg-gray-700/50 rounded-lg"></div>
+                    <div className="h-12 bg-gray-700/50 rounded-lg"></div>
                   </div>
-                ))}
+                ) : (
+                  <div className="space-y-4">
+                    <div className="relative group">
+                      <AtSign className="absolute left-3 top-3 w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
+                      <input
+                        id="email"
+                        type="email"
+                        placeholder="Email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 px-10 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-gray-700/70"
+                      />
+                    </div>
+                    <div className="relative group">
+                      <Key className="absolute left-3 top-3 w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
+                      <input
+                        id="password"
+                        type="password"
+                        placeholder="Password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 px-10 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-gray-700/70"
+                      />
+                    </div>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={handleSubmit}
+                      className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-blue-500/20"
+                    >
+                      <LogIn className="w-5 h-5" />
+                      Sign In
+                    </motion.button>
+                  </div>
+                )}
+              </div>
 
-                <button
-                  type="submit"
-                  className="w-full px-6 py-5 mb-5 text-sm font-bold leading-none text-white transition duration-300 md:w-96 rounded-2xl hover:bg-purple-blue-600 focus:ring-4 focus:ring-purple-blue-100 bg-purple-500"
+              {/* Sign Up Section */}
+              <div className={`space-y-6 ${!isSignUpMode ? "hidden md:block" : ""}`}>
+                <div className="text-center">
+                  <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                    <School className="w-16 h-16 text-purple-500 mx-auto mb-4" />
+                  </motion.div>
+                  <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    New Student?
+                  </h2>
+                  <p className="text-gray-400 mt-2">
+                    Sign up and join our community of learners.
+                  </p>
+                </div>
+                <div className="bg-gray-700/30 p-6 rounded-xl border border-gray-700 hover:border-gray-600 transition-all">
+                  <p className="text-gray-300 leading-relaxed">
+                    Join our academic community and unlock opportunities to guide the next generation of innovators. Create your comprehensive faculty profile and connect with aspiring students.
+                  </p>
+                </div>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => navigate("/student-signup")}
+                  className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-purple-500/20"
                 >
-                  Sign In
-                </button>
-                <p className="text-sm leading-relaxed text-grey-900">
-                  Don't have an account?{" "}
-                  <Link
-                    to="/student-signup"
-                    className="font-bold text-grey-700"
-                  >
-                    Sign up
-                  </Link>
-                </p>
-              </form>
+                  <UserPlus className="w-5 h-5" />
+                  Get Started
+                </motion.button>
+              </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

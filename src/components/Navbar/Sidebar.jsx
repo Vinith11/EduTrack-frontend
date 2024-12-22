@@ -26,7 +26,6 @@ const Sidebar = () => {
 
   // Define navigation routes based on roles
   const studentRoutes = [
-    { name: "Home", href: "/", icon: <Home className="w-5 h-5 text-blue-400" /> },
     { name: "Profile", href: "/student-profile", icon: <Home className="w-5 h-5 text-blue-400" /> },
     { name: "Internship Form", href: "/internship-form", icon: <Home className="w-5 h-5 text-blue-400" /> },
     { name: "All Internship", href: "/all-internship", icon: <Home className="w-5 h-5 text-blue-400" /> },
