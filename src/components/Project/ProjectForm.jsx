@@ -1,4 +1,4 @@
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, useEffect, memo, useContext } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setUserProfile } from "../../redux/slices/authSlice";
@@ -16,6 +16,9 @@ import {
   GraduationCap,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router";
+import { SnackbarContext } from '../../context/SnackbarProvider'; 
+
 
 // Memoized form steps components
 const ProjectDetailsForm = memo(({ formData, onInputChange }) => (
@@ -309,6 +312,9 @@ const ProjectStepperForm = () => {
     }));
   };
 
+  const { handleSnackbarOpen } = useContext(SnackbarContext);
+
+  const navigate = useNavigate();
   const handleSubmit = async () => {
     setLoading(true);
     try {
@@ -329,7 +335,8 @@ const ProjectStepperForm = () => {
         dispatch(
           setUserProfile({ jwt, email, batch, project_id: data.project_id })
         );
-        alert("Project created successfully!");
+        handleSnackbarOpen("Project created successfully!", false);
+        navigate("/student-profile")
       }
     } catch (error) {
       console.error("Failed to create project:", error);
