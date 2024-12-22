@@ -3,63 +3,66 @@ import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { setUserProfile } from '../../redux/slices/authSlice';
 import axios from 'axios';
+import { 
+  Calendar, 
+  Users, 
+  BookOpen, 
+  ClipboardCheck, 
+  Loader2, 
+  Send,
+  FolderKanban,
+  ChevronLeft,
+  ChevronRight,
+  GraduationCap
+} from 'lucide-react';
+import { motion } from 'framer-motion';
 
 // Memoized form steps components
 const ProjectDetailsForm = memo(({ formData, onInputChange }) => (
-  <div className="space-y-4">
-    <h2 className="text-xl font-semibold mb-4">Project Details</h2>
-    <div>
-      <label htmlFor="project-name" className="block text-sm font-medium text-gray-700">
-        Project Name
-      </label>
+  <div className="space-y-6">
+    <div className="relative group">
+      <FolderKanban className="absolute left-3 top-3 w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
       <input
-        id="project-name"
         type="text"
         name="student_project_name"
+        placeholder="Project Name"
         value={formData.student_project_name}
         onChange={onInputChange}
-        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+        className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 px-10 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-gray-700/70"
       />
     </div>
 
-    <div>
-      <label htmlFor="project-domain" className="block text-sm font-medium text-gray-700">
-        Domain
-      </label>
+    <div className="relative group">
+      <BookOpen className="absolute left-3 top-3 w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
       <input
-        id="project-domain"
         type="text"
         name="student_project_domain"
+        placeholder="Project Domain"
         value={formData.student_project_domain}
         onChange={onInputChange}
-        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+        className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 px-10 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-gray-700/70"
       />
     </div>
 
-    <div>
-      <label htmlFor="project-description" className="block text-sm font-medium text-gray-700">
-        Description
-      </label>
+    <div className="relative group">
+      <ClipboardCheck className="absolute left-3 top-3 w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
       <textarea
-        id="project-description"
         name="student_project_description"
+        placeholder="Project Description"
         value={formData.student_project_description}
         onChange={onInputChange}
-        className="mt-1 block w-full border border-gray-300 rounded-md p-2 h-32"
+        className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 px-10 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-gray-700/70 min-h-32"
       />
     </div>
 
-    <div>
-      <label htmlFor="project-start" className="block text-sm font-medium text-gray-700">
-        Start Date
-      </label>
+    <div className="relative group">
+      <Calendar className="absolute left-3 top-3 w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
       <input
-        id="project-start"
         type="date"
         name="student_project_start"
         value={formData.student_project_start}
         onChange={onInputChange}
-        className="mt-1 block w-full border border-gray-300 rounded-md p-2"
+        className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 px-10 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-gray-700/70"
       />
     </div>
   </div>
@@ -67,26 +70,31 @@ const ProjectDetailsForm = memo(({ formData, onInputChange }) => (
 
 const TeamSelection = memo(({ students, formData, onToggleMember }) => (
   <div className="space-y-4">
-    <h2 className="text-xl font-semibold mb-4">Select Team Members</h2>
-    <div className="space-y-2">
+    <div className="grid gap-4">
       {students.map(student => (
-        <div key={student.usn} className="flex items-center justify-between p-2 border rounded">
+        <motion.div
+          key={student.usn}
+          whileHover={{ scale: 1.02 }}
+          className="bg-gray-700/50 p-4 rounded-lg border border-gray-600 flex items-center justify-between"
+        >
           <div>
-            <p className="font-medium">{student.student_name}</p>
-            <p className="text-sm text-gray-600">{student.usn}</p>
+            <p className="text-lg font-medium text-gray-200">{student.student_name}</p>
+            <p className="text-sm text-gray-400">{student.usn}</p>
           </div>
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             type="button"
             onClick={() => onToggleMember(student.usn)}
-            className={`px-3 py-1 rounded ${
+            className={`px-4 py-2 rounded-lg ${
               formData.team_members.includes(student.usn)
-                ? 'bg-red-500 text-white'
-                : 'bg-blue-500 text-white'
-            }`}
+                ? 'bg-red-500 hover:bg-red-600'
+                : 'bg-blue-500 hover:bg-blue-600'
+            } text-white transition-colors`}
           >
             {formData.team_members.includes(student.usn) ? 'Remove' : 'Add'}
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       ))}
     </div>
   </div>
@@ -94,71 +102,93 @@ const TeamSelection = memo(({ students, formData, onToggleMember }) => (
 
 const GuideSelection = memo(({ guides, formData, onToggleGuide }) => (
   <div className="space-y-4">
-    <h2 className="text-xl font-semibold mb-4">Select Project Guide</h2>
-    <div className="space-y-2">
+    <div className="grid gap-4">
       {guides.map(guide => (
-        <div key={guide.faculty_uid} className="flex items-center justify-between p-2 border rounded">
+        <motion.div
+          key={guide.faculty_uid}
+          whileHover={{ scale: 1.02 }}
+          className="bg-gray-700/50 p-4 rounded-lg border border-gray-600 flex items-center justify-between"
+        >
           <div>
-            <p className="font-medium">{guide.faculty_name}</p>
-            <p className="text-sm text-gray-600">{guide.faculty_uid}</p>
+            <p className="text-lg font-medium text-gray-200">{guide.faculty_name}</p>
+            <p className="text-sm text-gray-400">{guide.faculty_uid}</p>
           </div>
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             type="button"
             onClick={() => onToggleGuide(guide.faculty_uid)}
-            className={`px-3 py-1 rounded ${
+            className={`px-4 py-2 rounded-lg ${
               formData.student_project_guide_id === guide.faculty_uid
-                ? 'bg-red-500 text-white'
-                : 'bg-blue-500 text-white'
-            }`}
+                ? 'bg-red-500 hover:bg-red-600'
+                : 'bg-blue-500 hover:bg-blue-600'
+            } text-white transition-colors`}
           >
             {formData.student_project_guide_id === guide.faculty_uid ? 'Remove' : 'Select'}
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       ))}
     </div>
   </div>
 ));
 
 const ProjectConfirmation = memo(({ formData, onSubmit, loading }) => (
-  <div className="space-y-4">
-    <h2 className="text-xl font-semibold mb-4">Confirm Project Details</h2>
-    <div className="bg-gray-50 p-4 rounded-lg space-y-3">
-      <div>
-        <h3 className="font-medium text-gray-700">Project Details</h3>
-        <p><span className="font-medium">Name:</span> {formData.student_project_name}</p>
-        <p><span className="font-medium">Domain:</span> {formData.student_project_domain}</p>
-        <p><span className="font-medium">Description:</span> {formData.student_project_description}</p>
-        <p><span className="font-medium">Start Date:</span> {formData.student_project_start}</p>
-      </div>
-      
-      <div>
-        <h3 className="font-medium text-gray-700">Team Information</h3>
-        <p><span className="font-medium">Project Leader:</span> {formData.student_project_leader_id}</p>
+  <div className="space-y-6">
+    <div className="bg-gray-700/50 p-6 rounded-lg border border-gray-600">
+      <div className="space-y-4">
         <div>
-          <span className="font-medium">Team Members:</span>
-          <ul className="list-disc pl-5 mt-1">
-            {formData.team_members.map(usn => (
-              <li key={usn}>{usn}</li>
-            ))}
-          </ul>
+          <h3 className="text-lg font-medium text-gray-200 mb-2">Project Details</h3>
+          <div className="space-y-2 text-gray-300">
+            <p><span className="font-medium text-gray-200">Name:</span> {formData.student_project_name}</p>
+            <p><span className="font-medium text-gray-200">Domain:</span> {formData.student_project_domain}</p>
+            <p><span className="font-medium text-gray-200">Description:</span> {formData.student_project_description}</p>
+            <p><span className="font-medium text-gray-200">Start Date:</span> {formData.student_project_start}</p>
+          </div>
+        </div>
+        
+        <div>
+          <h3 className="text-lg font-medium text-gray-200 mb-2">Team Information</h3>
+          <div className="space-y-2 text-gray-300">
+            <p><span className="font-medium text-gray-200">Project Leader:</span> {formData.student_project_leader_id}</p>
+            <div>
+              <span className="font-medium text-gray-200">Team Members:</span>
+              <ul className="mt-1 space-y-1">
+                {formData.team_members.map(usn => (
+                  <li key={usn} className="ml-4">• {usn}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-lg font-medium text-gray-200 mb-2">Guide Information</h3>
+          <p className="text-gray-300">
+            <span className="font-medium text-gray-200">Selected Guide:</span> {formData.student_project_guide_id}
+          </p>
         </div>
       </div>
-
-      <div>
-        <h3 className="font-medium text-gray-700">Guide Information</h3>
-        <p><span className="font-medium">Selected Guide:</span> {formData.student_project_guide_id}</p>
-      </div>
     </div>
-    <button
+
+    <motion.button
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
       type="button"
       onClick={onSubmit}
       disabled={loading}
-      className="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 disabled:bg-gray-400"
+      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      {loading ? 'Creating Project...' : 'Confirm & Submit'}
-    </button>
+      {loading ? (
+        <Loader2 className="w-5 h-5 animate-spin" />
+      ) : (
+        <Send className="w-5 h-5" />
+      )}
+      {loading ? "Creating Project..." : "Confirm & Submit"}
+    </motion.button>
   </div>
 ));
+
+
 
 const ProjectStepperForm = () => {
   const dispatch = useDispatch();
@@ -287,48 +317,106 @@ const ProjectStepperForm = () => {
     }
   };
 
+  const steps = [
+    { title: 'Project Details', icon: FolderKanban },
+    { title: 'Team', icon: Users },
+    { title: 'Guide', icon: GraduationCap },
+    { title: 'Confirm', icon: ClipboardCheck }
+  ];
+
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="mb-8 flex justify-between items-center">
-        {['Project Details', 'Team', 'Guide', 'Confirm'].map((step, index) => (
-          <div key={step} className="flex flex-col items-center">
-            <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                index === activeStep
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200'
-              }`}
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 py-12 px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="max-w-4xl mx-auto"
+      >
+        <div className="bg-gray-800/50 backdrop-blur-xl rounded-2xl p-8 shadow-2xl border border-gray-700/50">
+          <div className="text-center mb-8">
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="inline-block"
             >
-              {index + 1}
-            </div>
-            <span className="mt-2 text-sm">{step}</span>
+              <FolderKanban className="w-20 h-20 text-blue-500 mx-auto mb-4" />
+            </motion.div>
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Create Project
+            </h2>
+            <p className="text-gray-400 mt-2">Fill in your project details step by step</p>
           </div>
-        ))}
-      </div>
-
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        {renderStepContent()}
-
-        <div className="mt-8 flex justify-between">
-          <button
-            type="button"
-            onClick={() => setActiveStep(prev => Math.max(0, prev - 1))}
-            disabled={activeStep === 0}
-            className="px-4 py-2 bg-gray-500 text-white rounded disabled:bg-gray-300"
-          >
-            Previous
-          </button>
-          {activeStep < 3 && (
-            <button
-              type="button"
-              onClick={() => setActiveStep(prev => Math.min(3, prev + 1))}
-              className="px-4 py-2 bg-blue-500 text-white rounded"
-            >
-              Next
-            </button>
-          )}
+  
+          <div className="mb-12 flex justify-between items-center relative">
+            {/* Progress bar background */}
+            <div className="absolute top-1/2 left-0 w-full h-1 bg-gray-700 transform -translate-y-1/2" />
+            
+            {/* Active progress bar */}
+            <div 
+              className="absolute top-1/2 left-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 transform -translate-y-1/2 transition-all duration-300"
+              style={{ width: `${(activeStep / 3) * 100}%` }}
+            />
+            
+            {steps.map((step, index) => (
+              <motion.div
+                key={step.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="relative flex flex-col items-center"
+              >
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                    index === activeStep
+                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white'
+                      : index < activeStep
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-700 text-gray-400'
+                  } transition-all duration-300 shadow-lg`}
+                >
+                  <step.icon className="w-6 h-6" />
+                </motion.div>
+                <span className={`mt-2 text-sm font-medium ${
+                  index === activeStep ? 'text-blue-400' : 'text-gray-400'
+                }`}>
+                  {step.title}
+                </span>
+              </motion.div>
+            ))}
+          </div>
+  
+          <div className="bg-gray-800/30 p-6 rounded-xl border border-gray-700/50 backdrop-blur-xl shadow-xl">
+            {renderStepContent()}
+  
+            {activeStep !== 3 && (
+              <div className="mt-8 flex justify-between gap-4">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="button"
+                  onClick={() => setActiveStep(prev => Math.max(0, prev - 1))}
+                  disabled={activeStep === 0}
+                  className="px-6 py-3 bg-gray-700 text-gray-300 rounded-lg flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-600 transition-colors"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                  Previous
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="button"
+                  onClick={() => setActiveStep(prev => Math.min(3, prev + 1))}
+                  className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-lg flex items-center gap-2 transition-all shadow-lg hover:shadow-blue-500/20"
+                >
+                  Next
+                  <ChevronRight className="w-5 h-5" />
+                </motion.button>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

@@ -141,8 +141,10 @@ const Header = ({ studentInfo }) => {
 };
 
 const Stats = ({ projectInfo }) => {
+
+  const batch = useSelector((state) => state.auth.batch);
   const stats = [
-    { icon: <Book className="w-6 h-6" />, label: "Batch", value: projectInfo?.academic_year || "N/A" },
+    { icon: <Book className="w-6 h-6" />, label: "Batch", value: batch || "N/A" },
     { icon: <Code className="w-6 h-6" />, label: "Projects", value: projectInfo ? "1" : "0" },
     { icon: <Users className="w-6 h-6" />, label: "Team Size", value: "4" },
     { icon: <Target className="w-6 h-6" />, label: "Domain", value: projectInfo?.student_project_domain || "N/A" },
