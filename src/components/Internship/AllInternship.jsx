@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { API_BASE_URL } from "../../services/config";
 
-
 const AllInternship = () => {
   const [internships, setInternships] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,6 +21,7 @@ const AllInternship = () => {
           },
         });
         setInternships(response.data);
+        console.log(response)
         setLoading(false);
       } catch (err) {
         setError(err.message || "An error occurred while fetching internships.");
@@ -33,7 +33,7 @@ const AllInternship = () => {
   }, [jwt]);
 
   if (loading) {
-    return <div className="text-center mt-6">Loading internships...</div>;
+    return <div className="text-center mt-6 text-blue-400">Loading internships...</div>;
   }
 
   if (error) {
@@ -45,73 +45,69 @@ const AllInternship = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-gray-50">
-      <h2 className="text-3xl font-bold text-gray-800 text-center mb-6">
-        All Internships
-      </h2>
-      {internships.length === 0 ? (
-        <p className="text-center text-gray-600">No internships available.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {internships.map((internship) => (
-            <div
-              key={internship.internship_id}
-              className="p-4 bg-white shadow-md rounded-lg border border-gray-200"
-            >
-              <h3 className="text-xl font-bold text-blue-600 mb-2">
-                {internship.student_usn}
-              </h3>
-              <div className="text-gray-700 space-y-1">
-                <p>
-                  <span className="font-semibold">Start Date:</span>{" "}
-                  {internship.internship_start}
-                </p>
-                <p>
-                  <span className="font-semibold">End Date:</span>{" "}
-                  {internship.internship_end}
-                </p>
-                <p>
-                  <span className="font-semibold">Duration:</span>{" "}
-                  {internship.internship_duration}
-                </p>
-                <p>
-                  <span className="font-semibold">Location:</span>{" "}
-                  {internship.internship_location}
-                </p>
-                <p>
-                  <span className="font-semibold">Domain:</span>{" "}
-                  {internship.internship_domain}
-                </p>
-                <p>
-                  <span className="font-semibold">Certificate:</span>{" "}
-                  {internship.internship_certificate || "Not Provided"}
-                </p>
-                <p>
-                  <span className="font-semibold">
-                    Completion Certificate URL:
-                  </span>{" "}
-                  {internship.internship_completion_certificate_url ? (
-                    <a
-                      href={internship.internship_completion_certificate_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-500 underline"
-                    >
-                      View Certificate
-                    </a>
-                  ) : (
-                    "Not Available"
-                  )}
-                </p>
-                <p>
-                  <span className="font-semibold">Faculty UID:</span>{" "}
-                  {internship.faculty_uid || "N/A"}
-                </p>
+    <div className="min-h-screen bg-gray-900 text-gray-100">
+      <div className="container mx-auto px-4 py-8">
+        <h2 className="text-3xl font-bold text-center text-blue-400 mb-6">
+          All Internships
+        </h2>
+        {internships.length === 0 ? (
+          <p className="text-center text-gray-400">No internships available.</p>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {internships.map((internship) => (
+              <div
+                key={internship.internship_id}
+                className="bg-gray-800 shadow-lg rounded-xl p-6 border border-gray-700 transition-transform transform hover:scale-105"
+              >
+                <h3 className="text-2xl font-bold text-green-400 mb-4">
+                  {internship.student_usn}
+                </h3>
+                <h3 className="text-2xl font-bold text-green-400 mb-4">
+                  {internship.internship_evaluation_sheet}
+                </h3>
+                <div className="text-sm space-y-2">
+                  <p>
+                    <strong>Start Date:</strong> {internship.internship_start}
+                  </p>
+                  <p>
+                    <strong>End Date:</strong> {internship.internship_end}
+                  </p>
+                  <p>
+                    <strong>Duration:</strong> {internship.internship_duration}
+                  </p>
+                  <p>
+                    <strong>Location:</strong> {internship.internship_location}
+                  </p>
+                  <p>
+                    <strong>Domain:</strong> {internship.internship_domain}
+                  </p>
+                  <p>
+                    <strong>Certificate:</strong> {internship.internship_certificate || "Not Provided"}
+                  </p>
+                  <p>
+                    <strong>Completion Certificate URL:</strong>{" "}
+                    {internship.internship_completion_certificate_url ? (
+                      <a
+                        href={internship.internship_completion_certificate_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-400 hover:underline"
+                      >
+                        View Certificate
+                      </a>
+                    ) : (
+                      "Not Available"
+                    )}
+                  </p>
+                  <p>
+                    <strong>Faculty UID:</strong> {internship.faculty_uid || "N/A"}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
