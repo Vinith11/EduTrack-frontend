@@ -163,30 +163,30 @@ const ProjectBatch = () => {
                     {project.student_project_name}
                   </h2>
                   <div className="space-y-3 mb-4">
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm  ">
                       <span className="font-semibold">Leader ID:</span>{" "}
                       {project.student_project_leader_id}
                     </p>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm  ">
                       <span className="font-semibold">Domain:</span>{" "}
                       {project.student_project_domain}
                     </p>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm  ">
                       <span className="font-semibold">Description:</span>{" "}
                       {project.student_project_description}
                     </p>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm  ">
                       <span className="font-semibold">Start Date:</span>{" "}
                       {project.student_project_start}
                     </p>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm  ">
                       <span className="font-semibold">Status:</span>{" "}
                       <span 
                         className={`px-2 py-1 rounded-full text-xs ${
                           project.student_project_completion_status === 'Completed' ? 'bg-green-500/20 text-green-400' :
                           project.student_project_completion_status === 'Ongoing' ? 'bg-yellow-500/20 text-yellow-400' :
                           project.student_project_completion_status === 'Yet to Start' ? 'bg-red-500/20 text-red-400' :
-                          'bg-gray-500/20 text-gray-400'
+                          'bg-gray-500/20  '
                         }`}
                       >
                         {project.student_project_completion_status}
@@ -208,13 +208,13 @@ const ProjectBatch = () => {
                     {project.team_members && project.team_members.length > 0 ? (
                       <ul className="space-y-2">
                         {project.team_members.map((member, index) => (
-                          <li key={index} className="text-sm text-gray-400 bg-gray-700/50 px-3 py-2 rounded-lg">
+                          <li key={index} className="text-sm   bg-gray-700/50 px-3 py-2 rounded-lg">
                             {member}
                           </li>
                         ))}
                       </ul>
                     ) : (
-                      <p className="text-sm text-gray-400">
+                      <p className="text-sm  ">
                         No team members available.
                       </p>
                     )}
@@ -222,14 +222,14 @@ const ProjectBatch = () => {
                 </div>
               ))
             : !loading && (
-                <p className="text-gray-400 text-center col-span-full">
+                <p className="  text-center col-span-full">
                   No projects available.
                 </p>
               )}
         </div>
 
         {!loading && filteredProjects.length === 0 && (
-          <p className="text-gray-400 text-center">No projects available.</p>
+          <p className="  text-center">No projects available.</p>
         )}
       </div>
     </div>

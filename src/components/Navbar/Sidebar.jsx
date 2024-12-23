@@ -2,7 +2,22 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { clearJwt } from "../../redux/slices/authSlice";
-import { Menu, X, Home, LogOut, UserCheck, Users } from "lucide-react";
+import {
+  Menu,
+  X,
+  Home,
+  LogOut,
+  UserCheck,
+  Users,
+  UserCircle2,
+  ClipboardList,
+  Briefcase,
+  FolderPlus,
+  FileCheck,
+  GraduationCap,
+  ClipboardCheck,
+  BookOpen,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Sidebar = () => {
@@ -26,23 +41,66 @@ const Sidebar = () => {
 
   // Define navigation routes based on roles
   const studentRoutes = [
-    { name: "Profile", href: "/student-profile", icon: <Home className="w-5 h-5 text-blue-400" /> },
-    { name: "Internship Form", href: "/internship-form", icon: <Home className="w-5 h-5 text-blue-400" /> },
-    { name: "All Internship", href: "/all-internship", icon: <Home className="w-5 h-5 text-blue-400" /> },
+    {
+      name: "Profile",
+      href: "/student-profile",
+      icon: <UserCircle2 className="w-5 h-5 text-blue-400" />,
+    },
+    {
+      name: "Internship Form",
+      href: "/internship-form",
+      icon: <ClipboardList className="w-5 h-5 text-blue-400" />,
+    },
+    {
+      name: "All Internship",
+      href: "/all-internship",
+      icon: <Briefcase className="w-5 h-5 text-blue-400" />,
+    },
     ...(projectId === null
-      ? [{ name: "Project Form", href: "/project-form", icon: <Home className="w-5 h-5 text-blue-400" /> }]
+      ? [
+          {
+            name: "Project Form",
+            href: "/project-form",
+            icon: <FolderPlus className="w-5 h-5 text-blue-400" />,
+          },
+        ]
       : []),
   ];
 
   const facultyRoutes = [
-    { name: "Profile", href: "/profile", icon: <Home className="w-5 h-5 text-blue-400" /> },
-    { name: "Pending Request", href: "/requests", icon: <Home className="w-5 h-5 text-blue-400" /> },
-    { name: "Project Groups", href: "/project-batch", icon: <Home className="w-5 h-5 text-blue-400" /> },
-    { name: "All Internship by Students", href: "/all-internship-by-batch", icon: <UserCheck className="w-5 h-5 text-blue-400" /> },
-    { name: "All Projects by Batch", href: "/all-project-batch", icon: <Users className="w-5 h-5 text-blue-400" /> }
+    {
+      name: "Profile",
+      href: "/profile",
+      icon: <UserCircle2 className="w-5 h-5 text-blue-400" />,
+    },
+    {
+      name: "Pending Request",
+      href: "/requests",
+      icon: <ClipboardCheck className="w-5 h-5 text-blue-400" />,
+    },
+    {
+      name: "Project Groups",
+      href: "/project-batch",
+      icon: <Users className="w-5 h-5 text-blue-400" />,
+    },
+    {
+      name: "All Internship by Students",
+      href: "/all-internship-by-batch",
+      icon: <Briefcase className="w-5 h-5 text-blue-400" />,
+    },
+    {
+      name: "All Projects by Batch",
+      href: "/all-project-batch",
+      icon: <BookOpen className="w-5 h-5 text-blue-400" />,
+    },
   ];
 
-  const navigation = role === "Student" ? studentRoutes : role === "Faculty" ? facultyRoutes : [];
+  const navigation =
+    role === "Student"
+      ? studentRoutes
+      : role === "Faculty"
+      ? facultyRoutes
+      : [];
 
   return (
     <>
@@ -75,7 +133,10 @@ const Sidebar = () => {
               </div>
               <h2 className="text-xl font-bold text-gray-100">{role} Portal</h2>
             </div>
-            <button onClick={() => setShowSidebar(false)} className="p-2 rounded-lg hover:bg-gray-800">
+            <button
+              onClick={() => setShowSidebar(false)}
+              className="p-2 rounded-lg hover:bg-gray-800"
+            >
               <X className="w-6 h-6 text-gray-400" />
             </button>
           </div>
@@ -92,7 +153,9 @@ const Sidebar = () => {
               }}
               className="flex items-center gap-3 w-full p-3 text-gray-300 hover:bg-gray-800 rounded-lg transition-all duration-200 group"
             >
-              <span className="transition-transform duration-200 group-hover:scale-110">{item.icon}</span>
+              <span className="transition-transform duration-200 group-hover:scale-110">
+                {item.icon}
+              </span>
               <span className="font-medium">{item.name}</span>
             </button>
           ))}
@@ -110,7 +173,10 @@ const Sidebar = () => {
 
       {/* Header */}
       <div className="sticky top-0 z-30 bg-gray-900/95 backdrop-blur-sm border-b border-gray-800 px-6 py-4 flex items-center justify-between">
-        <button onClick={() => setShowSidebar(true)} className="p-2 hover:bg-gray-800 rounded-lg transition-colors">
+        <button
+          onClick={() => setShowSidebar(true)}
+          className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+        >
           <Menu className="w-6 h-6 text-gray-400" />
         </button>
         <h1 className="text-xl font-bold text-gray-100">Workflow</h1>

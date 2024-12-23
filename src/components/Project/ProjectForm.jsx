@@ -10,9 +10,12 @@ import {
   ClipboardCheck,
   Loader2,
   Send,
+  Globe,
+  FileText,
   FolderKanban,
   ChevronLeft,
   ChevronRight,
+  UserCircle2,
   GraduationCap,
 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -141,85 +144,123 @@ const GuideSelection = memo(({ guides, formData, onToggleGuide }) => (
   </div>
 ));
 
-const ProjectConfirmation = memo(({ formData, onSubmit, loading }) => (
-  <div className="space-y-6">
-    <div className="bg-gray-700/50 p-6 rounded-lg border border-gray-600">
-      <div className="space-y-4">
-        <div>
-          <h3 className="text-lg font-medium text-gray-200 mb-2">
-            Project Details
-          </h3>
-          <div className="space-y-2 text-gray-300">
-            <p>
-              <span className="font-medium text-gray-200">Name:</span>{" "}
-              {formData.student_project_name}
-            </p>
-            <p>
-              <span className="font-medium text-gray-200">Domain:</span>{" "}
-              {formData.student_project_domain}
-            </p>
-            <p>
-              <span className="font-medium text-gray-200">Description:</span>{" "}
-              {formData.student_project_description}
-            </p>
-            <p>
-              <span className="font-medium text-gray-200">Start Date:</span>{" "}
-              {formData.student_project_start}
-            </p>
-          </div>
-        </div>
 
-        <div>
-          <h3 className="text-lg font-medium text-gray-200 mb-2">
-            Team Information
-          </h3>
-          <div className="space-y-2 text-gray-300">
-            <p>
-              <span className="font-medium text-gray-200">Project Leader:</span>{" "}
-              {formData.student_project_leader_id}
-            </p>
-            <div>
-              <span className="font-medium text-gray-200">Team Members:</span>
-              <ul className="mt-1 space-y-1">
-                {formData.team_members.map((usn) => (
-                  <li key={usn} className="ml-4">
-                    • {usn}
-                  </li>
-                ))}
-              </ul>
+const ProjectConfirmation = memo(({ formData, onSubmit, loading }) => {
+  const sections = [
+    {
+      title: "Project Details",
+      icon: <FolderKanban className="w-6 h-6 text-blue-400" />,
+      content: [
+        { label: "Name", value: formData.student_project_name, icon: <FileText className="w-4 h-4" /> },
+        { label: "Domain", value: formData.student_project_domain, icon: <Globe className="w-4 h-4" /> },
+        { label: "Description", value: formData.student_project_description, icon: <FileText className="w-4 h-4" /> },
+        { label: "Start Date", value: formData.student_project_start, icon: <Calendar className="w-4 h-4" /> }
+      ]
+    },
+    {
+      title: "Team Information",
+      icon: <Users className="w-6 h-6 text-purple-400" />,
+      content: [
+        { 
+          label: "Project Leader", 
+          value: formData.student_project_leader_id,
+          icon: <UserCircle2 className="w-4 h-4" />
+        },
+        {
+          label: "Team Members",
+          value: formData.team_members,
+          isList: true,
+          icon: <Users className="w-4 h-4" />
+        }
+      ]
+    },
+    {
+      title: "Guide Information",
+      icon: <GraduationCap className="w-6 h-6 text-green-400" />,
+      content: [
+        { 
+          label: "Selected Guide", 
+          value: formData.student_project_guide_id,
+          icon: <UserCircle2 className="w-4 h-4" />
+        }
+      ]
+    }
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl overflow-hidden shadow-xl border border-gray-700">
+        {sections.map((section, index) => (
+          <div 
+            key={section.title}
+            className={`p-6 ${
+              index !== sections.length - 1 ? 'border-b border-gray-700' : ''
+            }`}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              {section.icon}
+              <h3 className="text-lg font-semibold text-gray-200">
+                {section.title}
+              </h3>
+            </div>
+            
+            <div className="space-y-4">
+              {section.content.map((item) => (
+                <div key={item.label} className="ml-9">
+                  {item.isList ? (
+                    <div>
+                      <div className="flex items-center gap-2 text-gray-300 mb-2">
+                        {item.icon}
+                        <span className="font-medium">{item.label}:</span>
+                      </div>
+                      <ul className="space-y-2">
+                        {item.value.map((usn) => (
+                          <li 
+                            key={usn} 
+                            className="flex items-center gap-2 text-gray-300 ml-6"
+                          >
+                            <div className="w-1.5 h-1.5 bg-blue-400 rounded-full" />
+                            {usn}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <div className="flex items-start gap-2 text-gray-300">
+                      {item.icon}
+                      <div>
+                        <span className="font-medium">{item.label}:</span>{" "}
+                        <span className="break-words">{item.value}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-
-        <div>
-          <h3 className="text-lg font-medium text-gray-200 mb-2">
-            Guide Information
-          </h3>
-          <p className="text-gray-300">
-            <span className="font-medium text-gray-200">Selected Guide:</span>{" "}
-            {formData.student_project_guide_id}
-          </p>
-        </div>
+        ))}
       </div>
-    </div>
 
-    <motion.button
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      type="button"
-      onClick={onSubmit}
-      disabled={loading}
-      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      {loading ? (
-        <Loader2 className="w-5 h-5 animate-spin" />
-      ) : (
-        <Send className="w-5 h-5" />
-      )}
-      {loading ? "Creating Project..." : "Confirm & Submit"}
-    </motion.button>
-  </div>
-));
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        type="button"
+        onClick={onSubmit}
+        disabled={loading}
+        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+      >
+        {loading ? (
+          <Loader2 className="w-5 h-5 animate-spin" />
+        ) : (
+          <Send className="w-5 h-5" />
+        )}
+        {loading ? "Creating Project..." : "Confirm & Submit"}
+      </motion.button>
+    </div>
+  );
+});
+
+
 
 const ProjectStepperForm = () => {
   const dispatch = useDispatch();

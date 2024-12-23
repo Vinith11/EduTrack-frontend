@@ -2,6 +2,18 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { API_BASE_URL } from "../../services/config";
+import {
+  Calendar,
+  MapPin,
+  Globe,
+  Award,
+  FileCheck,
+  Link,
+  UserCheck,
+  BookOpen,
+  Building,
+  Briefcase,
+} from "lucide-react";
 
 const AllInternshipByBatch = () => {
   const [selectedYear, setSelectedYear] = useState("");
@@ -86,65 +98,107 @@ const AllInternshipByBatch = () => {
         {error && <p className="text-red-500 text-center">{error}</p>}
 
         {/* Display Filtered Internships */}
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {internships.length > 0
-            ? internships.map((internship) => (
-                <div
-                  key={internship.internship_id}
-                  className="bg-gray-800 shadow-lg rounded-xl p-6 border border-gray-700 transition-transform transform hover:scale-105"
-                >
-                  <h2 className="text-2xl font-bold text-green-400 mb-4">
-                    {internship.internship_evaluation_sheet || "Unknown Company"}
-                  </h2>
-                  <h2 className="text-2xl font-bold text-green-400 mb-4">
-                    {internship.student_usn }
-                  </h2>
-                  <p className="text-sm ">
-                    <strong>Start Date:</strong> {internship.internship_start}
-                  </p>
-                  <p className="text-sm ">
-                    <strong>End Date:</strong> {internship.internship_end}
-                  </p>
-                  <p className="text-sm ">
-                    <strong>Duration:</strong> {internship.internship_duration}
-                  </p>
-                  <p className="text-sm ">
-                    <strong>Location:</strong> {internship.internship_location}
-                  </p>
-                  <p className="text-sm ">
-                    <strong>Domain:</strong> {internship.internship_domain}
-                  </p>
-                  <p className="text-sm ">
-                    <strong>Certificate:</strong>{" "}
-                    {internship.internship_certificate || "Not Provided"}
-                  </p>
-                  <p className="text-sm ">
-                    <strong>Completion Certificate URL:</strong>{" "}
-                    {internship.internship_completion_certificate_url ? (
-                      <a
-                        href={internship.internship_completion_certificate_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-400 hover:underline"
-                      >
-                        View Certificate
-                      </a>
-                    ) : (
-                      "Not Available"
-                    )}
-                  </p>
-                  <p className="text-sm ">
-                    <strong>Faculty UID:</strong>{" "}
-                    {internship.faculty_uid || "N/A"}
-                  </p>
+
+        {internships.length === 0 ? (
+          <div className="text-center text-gray-400 flex flex-col items-center gap-3">
+            <Building className="w-12 h-12" />
+            <p>No internships available.</p>
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {internships.map((internship) => (
+              <div
+                key={internship.internship_id}
+                className="bg-gradient-to-br from-gray-800 to-gray-800/50 shadow-lg rounded-xl p-6 border border-gray-700 transition-all hover:scale-105 hover:shadow-xl"
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <UserCheck className="w-6 h-6 text-green-400" />
+                  <h3 className="text-xl font-bold text-green-400">
+                    {internship.student_usn}
+                  </h3>
                 </div>
-              ))
-            : !loading && (
-                <p className=" text-center col-span-full">
-                  No internships available.
-                </p>
-              )}
-        </div>
+
+                <div className="flex items-center gap-3 mb-6">
+                  <Building className="w-6 h-6 text-green-400" />
+                  <h4 className="text-lg font-semibold text-green-400">
+                    {internship.internship_evaluation_sheet}
+                  </h4>
+                </div>
+
+                <div className="space-y-4 text-sm">
+                  <div className="flex items-center gap-3">
+                    <Calendar className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                    <div>
+                      <p>
+                        <strong>Start:</strong> {internship.internship_start}
+                      </p>
+                      <p>
+                        <strong>End:</strong> {internship.internship_end}
+                      </p>
+                      <p>
+                        <strong>Duration:</strong>{" "}
+                        {internship.internship_duration}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <MapPin className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                    <p>
+                      <strong>Location:</strong>{" "}
+                      {internship.internship_location}
+                    </p>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <Globe className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                    <p>
+                      <strong>Domain:</strong> {internship.internship_domain}
+                    </p>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <Award className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                    <p>
+                      <strong>Certificate:</strong>{" "}
+                      {internship.internship_certificate || "Not Provided"}
+                    </p>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <Link className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                    <p>
+                      <strong>Completion Certificate:</strong>{" "}
+                      {internship.internship_completion_certificate_url ? (
+                        <a
+                          href={
+                            internship.internship_completion_certificate_url
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-400 hover:underline inline-flex items-center gap-1"
+                        >
+                          View Certificate
+                          <FileCheck className="w-4 h-4" />
+                        </a>
+                      ) : (
+                        "Not Available"
+                      )}
+                    </p>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <BookOpen className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                    <p>
+                      <strong>Faculty UID:</strong>{" "}
+                      {internship.faculty_uid || "N/A"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
