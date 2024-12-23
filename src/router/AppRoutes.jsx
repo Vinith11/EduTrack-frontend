@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 import ProtectedRoutes from "./ProtectedRoutes";
@@ -24,37 +24,38 @@ import AllProjectBatch from "../components/ProjectBatch/AllProjectBatch.jsx";
 
 const AppRoutes = () => {
   const location = useLocation();
+  const jwt = useSelector((state) => state.auth.jwt);
   const projectId = useSelector((state) => state.auth.project_id);
 
   const showNavigation =
+    location.pathname !== "/" &&
     location.pathname !== "/student-signin" &&
     location.pathname !== "/student-signup" &&
     location.pathname !== "/faculty-signup" &&
-    location.pathname !== "/faculty-signin";
+    location.pathname !== "/faculty-signin" &&
+    jwt;
 
   return (
     <>
       {showNavigation && <Navbar />}
       <Routes>
         {/* Public Routes */}
-        <Route path="/student-signin" element={<StudentSignIn />} />
-        <Route path="/student-signup" element={<StudentSignUp />} />
-        <Route path="/faculty-signin" element={<FacultySignIn />} />
-        <Route path="/faculty-signup" element={<FacultySignUp />} />
+        <Route path="/" element={jwt ? <Navigate to="/profile" replace /> : <App />} />
+        <Route path="/student-signin" element={jwt ? <Navigate to="/profile" replace /> : <StudentSignIn />} />
+        <Route path="/student-signup" element={jwt ? <Navigate to="/profile" replace /> : <StudentSignUp />} />
+        <Route path="/faculty-signin" element={jwt ? <Navigate to="/profile" replace /> : <FacultySignIn />} />
+        <Route path="/faculty-signup" element={jwt ? <Navigate to="/profile" replace /> : <FacultySignUp />} />
 
-        {/* Protected Routes for Faculty */}
+        {/* Protected Routes */}
         <Route element={<ProtectedRoutes allowedRoles={["Faculty"]} />}>
-          <Route path="/" element={<App />} />
+          <Route path="/profile" element={<FacutlyProfile />} />
           <Route path="/requests" element={<ApproveRequests />} />
           <Route path="/project-batch" element={<ProjectBatch />} />
           <Route path="/all-project-batch" element={<AllProjectBatch />} />
-          <Route path="/profile" element={<FacutlyProfile />} />
           <Route path="/all-internship-by-batch" element={<AllInternshipByBatch />} />
         </Route>
 
-        {/* Protected Routes for Students */}
-        <Route element={<ProtectedRoutes allowedRoles={['Student']} />}>
-          <Route path="/" element={<App />} />
+        <Route element={<ProtectedRoutes allowedRoles={["Student"]} />}>
           <Route path="/student-profile" element={<StudentProfile />} />
           <Route path="/internship-form" element={<InternshipForm />} />
           <Route path="/all-internship" element={<AllInternship />} />
@@ -62,7 +63,6 @@ const AppRoutes = () => {
           <Route path="/select-team-members" element={<SelectTeamMembers />} />
         </Route>
 
-        {/* Not Found */}
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </>
