@@ -20,7 +20,8 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router";
-import { SnackbarContext } from '../../context/SnackbarProvider'; 
+import { SnackbarContext } from '../../context/SnackbarProvider';
+import { API_BASE_URL } from "../../services/config"; 
 
 
 // Memoized form steps components
@@ -289,7 +290,7 @@ const ProjectStepperForm = () => {
     const fetchGuides = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5454/api/faculty/users/all",
+          `${API_BASE_URL}/api/faculty/users/all`,
           {
             method: "GET",
             headers: { Authorization: `Bearer ${jwt}` },
@@ -310,7 +311,7 @@ const ProjectStepperForm = () => {
     const fetchStudents = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5454/api/projects/available-students/${batch}`,
+          `${API_BASE_URL}/api/projects/available-students/${batch}`,
           {
             headers: {
               Authorization: `Bearer ${jwt}`,
@@ -360,7 +361,7 @@ const ProjectStepperForm = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        "http://localhost:5454/api/projects/create",
+        `${API_BASE_URL}/api/projects/create`,
         {
           method: "POST",
           headers: {
