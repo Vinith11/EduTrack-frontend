@@ -102,7 +102,7 @@ const AllProjectBatch = () => {
         <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
           <CheckCircle2 className="w-5 h-5 text-blue-400" /> Project Status
         </h3>
-        <ResponsiveContainer width="100%" height={240}>
+        <ResponsiveContainer width="100%" height={250}>
           <RechartsPieChart>
             <Pie
               data={getStatusData()}
@@ -127,7 +127,7 @@ const AllProjectBatch = () => {
         <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
           <Folder className="w-5 h-5 text-blue-400" /> Domain Distribution
         </h3>
-        <ResponsiveContainer width="100%" height={240}>
+        <ResponsiveContainer width="100%" height={250}>
           <RechartsPieChart>
             <Pie
               data={getDomainData()}
