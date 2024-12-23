@@ -3,17 +3,24 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { API_BASE_URL } from "../../services/config";
 import {
-  Calendar,
-  MapPin,
-  Globe,
-  Award,
-  FileCheck,
-  Link,
-  UserCheck,
-  BookOpen,
-  Building,
-  Briefcase,
+  Calendar, MapPin, Globe, Award, FileCheck, Link, UserCheck, BookOpen, Building, Briefcase, PieChart
 } from "lucide-react";
+import {
+  ResponsiveContainer,
+  PieChart as RechartsPieChart,
+  Pie,
+  Tooltip,
+  Legend,
+  Cell,
+} from "recharts";
+
+const DOMAIN_COLORS = {
+  "Web/App": "#3b82f6",
+  "AI/ML": "#8b5cf6",
+  "Blockchain": "#ec4899",
+  "IoT": "#f97316",
+  "Others": "#6b7280"
+};
 
 const AllInternshipByBatch = () => {
   const [selectedYear, setSelectedYear] = useState("");
@@ -21,7 +28,6 @@ const AllInternshipByBatch = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Access JWT and faculty_uid from Redux state
   const { jwt, faculty_uid } = useSelector((state) => state.auth);
 
   const handleFilter = async () => {
@@ -41,15 +47,12 @@ const AllInternshipByBatch = () => {
       const response = await axios.get(
         `${API_BASE_URL}/api/internships/all-by-batch/${selectedYear}`,
         {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
+          headers: { Authorization: `Bearer ${jwt}` }
         }
       );
 
       if (response.status === 200) {
         setInternships(response.data);
-        console.log(response.data);
       } else if (response.status === 404) {
         setInternships([]);
       }
@@ -60,6 +63,45 @@ const AllInternshipByBatch = () => {
     }
   };
 
+  const getDomainData = () => {
+    const domainCounts = internships.reduce((acc, internship) => {
+      const domain = internship.internship_domain || "Others";
+      acc[domain] = (acc[domain] || 0) + 1;
+      return acc;
+    }, {});
+
+    return Object.entries(domainCounts).map(([name, value]) => ({ name, value }));
+  };
+
+  const renderAnalytics = () => (
+    <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-xl p-6 mb-8 max-w-3xl mx-auto">
+      <h2 className="text-xl font-semibold text-blue-400 mb-4 flex items-center gap-3">
+        <PieChart className="w-6 h-6" /> Domain Distribution
+      </h2>
+      <div className="bg-gray-700/50 p-4 rounded-xl border border-gray-600">
+        <ResponsiveContainer width="100%" height={240}>
+          <RechartsPieChart>
+            <Pie
+              data={getDomainData()}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              outerRadius={80}
+              dataKey="value"
+              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+            >
+              {getDomainData().map((entry) => (
+                <Cell key={entry.name} fill={DOMAIN_COLORS[entry.name]} />
+              ))}
+            </Pie>
+            <Tooltip />
+            <Legend />
+          </RechartsPieChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+
   const years = [2021, 2022, 2023, 2024, 2025];
 
   return (
@@ -69,20 +111,15 @@ const AllInternshipByBatch = () => {
           Filter Internships by Academic Year
         </h1>
 
-        {/* Dropdown and Search Button */}
         <div className="flex flex-col items-center md:flex-row md:justify-center gap-4 mb-6">
           <select
             value={selectedYear}
             onChange={(e) => setSelectedYear(e.target.value)}
             className="bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-gray-100"
           >
-            <option value="" disabled>
-              Select Academic Year
-            </option>
+            <option value="" disabled>Select Academic Year</option>
             {years.map((year) => (
-              <option key={year} value={year.toString()}>
-                {year}
-              </option>
+              <option key={year} value={year.toString()}>{year}</option>
             ))}
           </select>
           <button
@@ -93,11 +130,10 @@ const AllInternshipByBatch = () => {
           </button>
         </div>
 
-        {/* Display Loading or Error */}
         {loading && <p className="text-blue-400 text-center">Loading...</p>}
         {error && <p className="text-red-500 text-center">{error}</p>}
 
-        {/* Display Filtered Internships */}
+        {internships.length > 0 && renderAnalytics()}
 
         {internships.length === 0 ? (
           <div className="text-center text-gray-400 flex flex-col items-center gap-3">
@@ -106,6 +142,7 @@ const AllInternshipByBatch = () => {
           </div>
         ) : (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {/* Rest of the internship cards code remains the same */}
             {internships.map((internship) => (
               <div
                 key={internship.internship_id}
@@ -129,40 +166,25 @@ const AllInternshipByBatch = () => {
                   <div className="flex items-center gap-3">
                     <Calendar className="w-4 h-4 text-blue-400 flex-shrink-0" />
                     <div>
-                      <p>
-                        <strong>Start:</strong> {internship.internship_start}
-                      </p>
-                      <p>
-                        <strong>End:</strong> {internship.internship_end}
-                      </p>
-                      <p>
-                        <strong>Duration:</strong>{" "}
-                        {internship.internship_duration}
-                      </p>
+                      <p><strong>Start:</strong> {internship.internship_start}</p>
+                      <p><strong>End:</strong> {internship.internship_end}</p>
+                      <p><strong>Duration:</strong> {internship.internship_duration}</p>
                     </div>
                   </div>
 
                   <div className="flex gap-3">
                     <MapPin className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                    <p>
-                      <strong>Location:</strong>{" "}
-                      {internship.internship_location}
-                    </p>
+                    <p><strong>Location:</strong> {internship.internship_location}</p>
                   </div>
 
                   <div className="flex gap-3">
                     <Globe className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                    <p>
-                      <strong>Domain:</strong> {internship.internship_domain}
-                    </p>
+                    <p><strong>Domain:</strong> {internship.internship_domain}</p>
                   </div>
 
                   <div className="flex gap-3">
                     <Award className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                    <p>
-                      <strong>Certificate:</strong>{" "}
-                      {internship.internship_certificate || "Not Provided"}
-                    </p>
+                    <p><strong>Certificate:</strong> {internship.internship_certificate || "Not Provided"}</p>
                   </div>
 
                   <div className="flex gap-3">
@@ -171,9 +193,7 @@ const AllInternshipByBatch = () => {
                       <strong>Completion Certificate:</strong>{" "}
                       {internship.internship_completion_certificate_url ? (
                         <a
-                          href={
-                            internship.internship_completion_certificate_url
-                          }
+                          href={internship.internship_completion_certificate_url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-400 hover:underline inline-flex items-center gap-1"
@@ -189,10 +209,7 @@ const AllInternshipByBatch = () => {
 
                   <div className="flex gap-3">
                     <BookOpen className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                    <p>
-                      <strong>Faculty UID:</strong>{" "}
-                      {internship.faculty_uid || "N/A"}
-                    </p>
+                    <p><strong>Faculty UID:</strong> {internship.faculty_uid || "N/A"}</p>
                   </div>
                 </div>
               </div>

@@ -4,13 +4,24 @@ import { useNavigate } from "react-router";
 import { motion } from "framer-motion";
 import { SnackbarContext } from "../../context/SnackbarProvider";
 import { API_BASE_URL } from "../../services/config";
-import { Calendar, MapPin, Building2, BookOpen, Link, GraduationCap, ChevronRight, Loader2, Send, Building } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  Building2,
+  BookOpen,
+  Link,
+  GraduationCap,
+  ChevronRight,
+  Loader2,
+  Send,
+  Building,
+} from "lucide-react";
 
 export default function InternshipForm() {
   const [facultyList, setFacultyList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+
   const jwt = useSelector((state) => state.auth.jwt);
   const usn = useSelector((state) => state.auth.usn);
   const batch = useSelector((state) => state.auth.batch);
@@ -71,7 +82,8 @@ export default function InternshipForm() {
       internship_location: formData.internshipLocation,
       internship_domain: formData.internshipDomain,
       internship_evaluation_sheet: formData.companyName,
-      internship_completion_certificate_url: formData.internshipCompletionCertificateUrl,
+      internship_completion_certificate_url:
+        formData.internshipCompletionCertificateUrl,
       faculty_uid: formData.facultyUid,
     };
 
@@ -118,7 +130,9 @@ export default function InternshipForm() {
             <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
               Internship Details
             </h2>
-            <p className="text-gray-400 mt-2">Submit your internship information</p>
+            <p className="text-gray-400 mt-2">
+              Submit your internship information
+            </p>
           </div>
 
           {loading ? (
@@ -205,14 +219,19 @@ export default function InternshipForm() {
 
               <div className="relative group">
                 <BookOpen className="absolute left-3 top-3 w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
-                <input
-                  type="text"
+                <select
                   name="internshipDomain"
-                  placeholder="Domain (e.g., Web Development)"
                   value={formData.internshipDomain}
                   onChange={handleChange}
                   className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 px-10 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-gray-700/70"
-                />
+                >
+                  <option value="">Select Domain</option>
+                  <option value="Web/App">Web/App</option>
+                  <option value="AI/ML">AI/ML</option>
+                  <option value="Blockchain">Blockchain</option>
+                  <option value="IoT">IoT</option>
+                  <option value="Others">Others</option>
+                </select>
               </div>
 
               <div className="relative group">
@@ -237,7 +256,10 @@ export default function InternshipForm() {
                 >
                   <option value="">Select Faculty</option>
                   {facultyList.map((faculty) => (
-                    <option key={faculty.faculty_uid} value={faculty.faculty_uid}>
+                    <option
+                      key={faculty.faculty_uid}
+                      value={faculty.faculty_uid}
+                    >
                       {faculty.faculty_name}
                     </option>
                   ))}
