@@ -41,14 +41,19 @@ const ProjectDetailsForm = memo(({ formData, onInputChange }) => (
 
     <div className="relative group">
       <BookOpen className="absolute left-3 top-3 w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
-      <input
-        type="text"
+      <select
         name="student_project_domain"
-        placeholder="Project Domain"
         value={formData.student_project_domain}
         onChange={onInputChange}
-        className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 px-10 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-gray-700/70"
-      />
+        className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 px-10 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-gray-700/70 appearance-none"
+      >
+        <option value="">Select Domain</option>
+        <option value="Web/App">Web/App</option>
+        <option value="AI/ML">AI/ML</option>
+        <option value="Blockchain">Blockchain</option>
+        <option value="IoT">IoT</option>
+        <option value="Others">Others</option>
+      </select>
     </div>
 
     <div className="relative group">
@@ -290,13 +295,13 @@ const ProjectStepperForm = () => {
     const fetchGuides = async () => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/api/faculty/users/all`,
+          `${API_BASE_URL}/api/projects/available-faculty/${batch}`,
           {
             method: "GET",
             headers: { Authorization: `Bearer ${jwt}` },
           }
         );
-        if (response.status === 202) {
+        if (response.status === 200) {
           const data = await response.json();
           setGuides(data);
         }
