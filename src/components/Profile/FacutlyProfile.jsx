@@ -33,6 +33,7 @@ const FacultyProfile = () => {
             Authorization: `Bearer ${jwt}`,
           },
         });
+        console.log("Faculty Profile: ", response.data);
         setFaculty(response.data);
       } catch (err) {
         setError("Failed to fetch faculty profile. Please try again.");

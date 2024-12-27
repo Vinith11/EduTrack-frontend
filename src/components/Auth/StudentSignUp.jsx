@@ -63,7 +63,7 @@ const StudentSignUp = () => {
         dispatch(setUserProfile({ usn, email, batch, project_id }));
 
         toast.success("Sign Up Successful!");
-        navigate("/student-profile");
+        navigate("/profile");
       }
     } catch (error) {
       console.error(error);

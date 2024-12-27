@@ -11,9 +11,9 @@ const ProtectedRoutes = ({ allowedRoles }) => {
     return <Navigate to="/" replace />;
   }
 
-  if (!allowedRoles.includes(role)) {
-    return <Navigate to={role === "Student" ? "/student-profile" : "/profile"} replace />;
-  }
+//  if (!allowedRoles.includes(role)) {
+    //return <Navigate to={role === "Student" ? "/profile" : "/profile"} replace />;
+  //}
 
   return <Outlet />;
 };

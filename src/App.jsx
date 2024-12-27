@@ -13,7 +13,7 @@ const App = () => {
     if(role === "Faculty"){
       navigate("/profile");
     } else{
-      navigate("/student-profile");
+      navigate("/profile");
     }
 
     return null;

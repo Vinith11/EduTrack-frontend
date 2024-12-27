@@ -52,7 +52,7 @@ const StudentSignIn = () => {
 
         dispatch(setUserProfile({ usn, email, batch, project_id }));
         toast.success("Sign In Successful!");
-        navigate("/student-profile");
+        navigate("/profile");
       } else {
         toast.error("Sign In Failed! Please check your credentials.");
       }

@@ -41,6 +41,8 @@ const StudentProfile = () => {
           }
         );
 
+        console.log(profileResponse.data)
+
         const profileData = profileResponse.data;
         setStudent(profileData);
 

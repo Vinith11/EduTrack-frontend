@@ -20,6 +20,7 @@ import StudentProfile from "../components/Profile/StudentProfile.jsx";
 import FacutlyProfile from "../components/Profile/FacutlyProfile.jsx";
 import AllInternshipByBatch from "../components/Internship/AllInternshipByBatch.jsx";
 import AllProjectBatch from "../components/ProjectBatch/AllProjectBatch.jsx";
+import Profile from "../components/Profile/Profile.jsx";
 
 
 const AppRoutes = () => {
@@ -48,7 +49,7 @@ const AppRoutes = () => {
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoutes allowedRoles={["Faculty"]} />}>
-          <Route path="/profile" element={<FacutlyProfile />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/requests" element={<ApproveRequests />} />
           <Route path="/project-batch" element={<ProjectBatch />} />
           <Route path="/all-project-batch" element={<AllProjectBatch />} />
@@ -56,7 +57,7 @@ const AppRoutes = () => {
         </Route>
 
         <Route element={<ProtectedRoutes allowedRoles={["Student"]} />}>
-          <Route path="/student-profile" element={<StudentProfile />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/internship-form" element={<InternshipForm />} />
           <Route path="/all-internship" element={<AllInternship />} />
           {projectId === null && <Route path="/project-form" element={<ProjectForm />} />}
