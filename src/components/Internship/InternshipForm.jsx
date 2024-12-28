@@ -81,7 +81,7 @@ export default function InternshipForm() {
       internship_certificate: formData.internshipCertificate,
       internship_location: formData.internshipLocation,
       internship_domain: formData.internshipDomain,
-      internship_evaluation_sheet: formData.companyName,
+      company_name: formData.companyName,
       internship_completion_certificate_url:
         formData.internshipCompletionCertificateUrl,
       faculty_uid: formData.facultyUid,
@@ -176,30 +176,6 @@ export default function InternshipForm() {
                   name="companyName"
                   placeholder="Company Name"
                   value={formData.companyName}
-                  onChange={handleChange}
-                  className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 px-10 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-gray-700/70"
-                />
-              </div>
-
-              <div className="relative group">
-                <Calendar className="absolute left-3 top-3 w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
-                <input
-                  type="text"
-                  name="internshipDuration"
-                  placeholder="Duration (e.g., 3 months)"
-                  value={formData.internshipDuration}
-                  onChange={handleChange}
-                  className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 px-10 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-gray-700/70"
-                />
-              </div>
-
-              <div className="relative group">
-                <BookOpen className="absolute left-3 top-3 w-5 h-5 text-gray-400 group-hover:text-blue-400 transition-colors" />
-                <input
-                  type="text"
-                  name="internshipCertificate"
-                  placeholder="Certificate Name"
-                  value={formData.internshipCertificate}
                   onChange={handleChange}
                   className="w-full bg-gray-700/50 border border-gray-600 rounded-lg py-3 px-10 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all hover:bg-gray-700/70"
                 />

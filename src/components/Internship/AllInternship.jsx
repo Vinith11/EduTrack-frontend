@@ -94,7 +94,7 @@ const AllInternship = () => {
                 <div className="flex items-center gap-3 mb-6">
                   <Building className="w-6 h-6 text-green-400" />
                   <h4 className="text-lg font-semibold text-green-400">
-                    {internship.internship_evaluation_sheet}
+                    {internship.company_name}
                   </h4>
                 </div>
 
@@ -127,14 +127,6 @@ const AllInternship = () => {
                     <Globe className="w-4 h-4 text-blue-400 flex-shrink-0" />
                     <p>
                       <strong>Domain:</strong> {internship.internship_domain}
-                    </p>
-                  </div>
-
-                  <div className="flex gap-3">
-                    <Award className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                    <p>
-                      <strong>Certificate:</strong>{" "}
-                      {internship.internship_certificate || "Not Provided"}
                     </p>
                   </div>
 
