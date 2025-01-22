@@ -383,7 +383,7 @@ const ProjectStepperForm = () => {
           setUserProfile({ jwt, email, batch, project_id: data.project_id })
         );
         handleSnackbarOpen("Project created successfully!", false);
-        navigate("/student-profile")
+        navigate("/profile")
       }
     } catch (error) {
       console.error("Failed to create project:", error);

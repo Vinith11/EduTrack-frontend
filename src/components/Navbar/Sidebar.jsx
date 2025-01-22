@@ -43,7 +43,7 @@ const Sidebar = () => {
   const studentRoutes = [
     {
       name: "Profile",
-      href: "/student-profile",
+      href: "/profile",
       icon: <UserCircle2 className="w-5 h-5 text-blue-400" />,
     },
     {
