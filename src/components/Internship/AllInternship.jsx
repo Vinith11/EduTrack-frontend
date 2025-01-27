@@ -52,8 +52,10 @@ const AllInternship = () => {
 
   if (loading) {
     return (
-      <div className="text-center mt-6 text-blue-400">
-        Loading internships...
+      <div className="min-h-screen w-full bg-[#0f172a] text-gray-100 flex items-center justify-center">
+        <div className="animate-spin text-blue-500">
+          <Briefcase className="w-8 h-8" />
+        </div>
       </div>
     );
   }

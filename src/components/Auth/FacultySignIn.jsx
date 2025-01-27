@@ -173,10 +173,10 @@ const FacultySignIn = () => {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={handleSubmit}
+                onClick={() => navigate("/faculty-signup")}
                 className="text-blue-400 hover:text-blue-300 flex items-center gap-2 mx-auto transition-colors"
               >
-                {isSignUpMode ? "Already have an account?" : "Need to create an account?"}
+                Need to create an account?
                 <ChevronRight className="w-4 h-4" />
               </motion.button>
             </div>

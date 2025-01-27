@@ -16,6 +16,7 @@ import {
   MapPin,
   Calendar,
   Clock,
+  User,
 } from "lucide-react";
 
 const FacultyProfile = () => {
@@ -46,7 +47,13 @@ const FacultyProfile = () => {
   }, [jwt]);
 
   if (loading) {
-    return <div className="text-center mt-10">Loading faculty profile...</div>;
+    return (
+      <div className="min-h-screen w-full bg-[#0f172a] text-gray-100 flex items-center justify-center">
+        <div className="animate-spin text-blue-500">
+          <User className="w-8 h-8" />
+        </div>
+      </div>
+    );
   }
 
   if (error) {

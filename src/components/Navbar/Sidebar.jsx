@@ -17,28 +17,36 @@ import {
   GraduationCap,
   ClipboardCheck,
   BookOpen,
+  User,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const Sidebar = () => {
   const [showSidebar, setShowSidebar] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const role = useSelector((state) => state.auth.role);
   const projectId = useSelector((state) => state.auth.project_id);
 
   const handleSignOut = () => {
-    if (role === "Student") {
-      navigate("/student-signin");
-    } else if (role === "Faculty") {
-      navigate("/faculty-signin");
-    } else {
+    setLoading(true);
+    setTimeout(() => {  
       navigate("/");
-    }
-    dispatch(clearJwt());
-    localStorage.removeItem("role");
+      setLoading(false);
+      dispatch(clearJwt());
+    }, 500);
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen w-full bg-[#0f172a] text-gray-100 flex items-center justify-center">
+        <div className="animate-spin text-blue-500">
+          <User className="w-8 h-8" />
+        </div>
+      </div>
+    );
+  }
   // Define navigation routes based on roles
   const studentRoutes = [
     {
@@ -179,7 +187,7 @@ const Sidebar = () => {
         >
           <Menu className="w-6 h-6 text-gray-400" />
         </button>
-        <h1 className="text-xl font-bold text-gray-100">Workflow</h1>
+        <h1 className="text-xl font-bold text-gray-100"></h1>
       </div>
     </>
   );

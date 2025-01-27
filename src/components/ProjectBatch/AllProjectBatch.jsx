@@ -9,7 +9,8 @@ import {
   Calendar,
   CheckCircle2,
   Clock,
-  Folder
+  Folder,
+  ChartPie
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -96,6 +97,17 @@ const AllProjectBatch = () => {
 
   const years = [2021, 2022, 2023, 2024, 2025];
 
+  if (loading) {
+    return (
+      <div className="min-h-screen w-full bg-[#0f172a] text-gray-100 flex items-center justify-center">
+        <div className="animate-spin text-blue-500">
+          <ChartPie className="w-8 h-8" />
+        </div>
+      </div>
+    );
+  }
+
+
   const renderAnalytics = () => (
     <div className="grid md:grid-cols-2 gap-6 bg-gray-800 rounded-xl border border-gray-700 shadow-xl p-6 mb-8 max-w-5xl mx-auto">
       <div className="bg-gray-700/50 p-4 rounded-xl border border-gray-600">
@@ -178,7 +190,6 @@ const AllProjectBatch = () => {
           </button>
         </div>
 
-        {loading && <p className="text-blue-400 text-center">Loading...</p>}
         {error && <p className="text-red-500 text-center mb-6">{error}</p>}
 
         {filteredProjects.length > 0 && renderAnalytics()}

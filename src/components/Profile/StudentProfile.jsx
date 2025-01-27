@@ -26,12 +26,13 @@ import {
 const StudentProfile = () => {
   const [student, setStudent] = useState(null);
   const [project, setProject] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
   const jwt = useSelector((state) => state.auth.jwt);
 
   useEffect(() => {
+    setLoading(true);
     const fetchProfile = async () => {
       try {
         const profileResponse = await axios.get(
@@ -40,8 +41,6 @@ const StudentProfile = () => {
             headers: { Authorization: `Bearer ${jwt}` },
           }
         );
-
-        console.log(profileResponse.data)
 
         const profileData = profileResponse.data;
         setStudent(profileData);
@@ -54,7 +53,6 @@ const StudentProfile = () => {
             }
           );
           setProject(projectResponse.data);
-          console.log(projectResponse.data)
         }
       } catch (err) {
         setError(
@@ -73,7 +71,7 @@ const StudentProfile = () => {
     return (
       <div className="min-h-screen w-full bg-[#0f172a] text-gray-100 flex items-center justify-center">
         <div className="animate-spin text-blue-500">
-          <Briefcase className="w-8 h-8" />
+          <User className="w-8 h-8" />
         </div>
       </div>
     );
@@ -81,16 +79,16 @@ const StudentProfile = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen w-full bg-[#0f172a] text-red-400 flex items-center justify-center">
-        {error}
-      </div>
+      <p className="text-center mt-10 text-red-500">{error}</p>
     );
   }
 
   if (!student) {
     return (
       <div className="min-h-screen w-full bg-[#0f172a] text-gray-100 flex items-center justify-center">
-        No student data available.
+        <div className="animate-spin text-blue-500">
+          <User className="w-8 h-8" />
+        </div>
       </div>
     );
   }
@@ -146,12 +144,11 @@ const Header = ({ studentInfo }) => {
 };
 
 const Stats = ({ projectInfo }) => {
-
   const batch = useSelector((state) => state.auth.batch);
   const stats = [
     { icon: <Book className="w-6 h-6" />, label: "Batch", value: batch || "N/A" },
     { icon: <Code className="w-6 h-6" />, label: "Projects", value: projectInfo ? "1" : "0" },
-    { icon: <Users className="w-6 h-6" />, label: "Team Size", value : projectInfo?.team_members.length + 1 },
+    { icon: <Users className="w-6 h-6" />, label: "Team Size", value: projectInfo?.team_members?.length ? (projectInfo.team_members.length + 1) : "N/A" },
     { icon: <Target className="w-6 h-6" />, label: "Domain", value: projectInfo?.student_project_domain || "N/A" },
   ];
 
@@ -208,17 +205,49 @@ const DetailedInfo = ({ studentInfo }) => {
 const ProjectInfo = ({ projectInfo }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
-    studentProjectUrl: '',
-    studentProjectReport: ''
+    studentProjectUrl: projectInfo?.studentProjectUrl || '',
+    studentProjectReport: projectInfo?.studentProjectReport || ''
   });
   const [loading, setLoading] = useState(false);
-
   const jwt = useSelector((state) => state.auth.jwt);
 
   const showAddReportButton =
-    projectInfo.faculty_approval_status &&
-    !projectInfo.studentProjectUrl &&
-    !projectInfo.studentProjectReport;
+    projectInfo?.faculty_approval_status &&
+    (!projectInfo?.studentProjectUrl ||
+    !projectInfo?.studentProjectReport);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/api/projects/${projectInfo.project_id}/update-urls`,
+        formData,
+        {
+          headers: { Authorization: `Bearer ${jwt}` }
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success('Project URLs updated successfully');
+        setIsModalOpen(false);
+        // Trigger a refresh of the parent component instead of directly mutating projectInfo
+        window.location.reload();
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to update URLs');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
   // Filter project details dynamically
   const projectDetails = [
@@ -248,41 +277,6 @@ const ProjectInfo = ({ projectInfo }) => {
       status: projectInfo.faculty_approval_status
     },
   ].filter(Boolean); // Filters out null entries
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const response = await axios.put(
-        `${API_BASE_URL}/api/projects/${projectInfo.project_id}/update-urls`,
-        formData,
-        {
-          headers: { Authorization: `Bearer ${jwt}` }
-        }
-      );
-
-      if (response.status === 200) {
-        toast.success('Project URLs updated successfully');
-        setIsModalOpen(false);
-
-        // Update the local state to reflect changes
-        projectInfo.studentProjectUrl = formData.studentProjectUrl;
-        projectInfo.studentProjectReport = formData.studentProjectReport;
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to update URLs');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
 
   return (
     <div className="bg-gray-900/50 rounded-xl p-8 border border-gray-800">

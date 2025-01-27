@@ -3,7 +3,8 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { API_BASE_URL } from "../../services/config";
 import {
-  Calendar, MapPin, Globe, Award, FileCheck, Link, UserCheck, BookOpen, Building, Briefcase, PieChart
+  Calendar, MapPin, Globe, Award, FileCheck, Link, UserCheck, BookOpen, Building, Briefcase, PieChart,
+  ChartPie
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -73,6 +74,17 @@ const AllInternshipByBatch = () => {
     return Object.entries(domainCounts).map(([name, value]) => ({ name, value }));
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen w-full bg-[#0f172a] text-gray-100 flex items-center justify-center">
+        <div className="animate-spin text-blue-500">
+          <ChartPie className="w-8 h-8" />
+        </div>
+      </div>
+    );
+  }
+
+
   const renderAnalytics = () => (
     <div className="bg-gray-800 rounded-xl border border-gray-700 shadow-xl p-6 mb-8 max-w-3xl mx-auto">
       <h2 className="text-xl font-semibold text-blue-400 mb-4 flex items-center gap-3">
@@ -130,7 +142,6 @@ const AllInternshipByBatch = () => {
           </button>
         </div>
 
-        {loading && <p className="text-blue-400 text-center">Loading...</p>}
         {error && <p className="text-red-500 text-center">{error}</p>}
 
         {internships.length > 0 && renderAnalytics()}
