@@ -16,11 +16,12 @@ import {
 } from "recharts";
 
 const DOMAIN_COLORS = {
-  "Web/App": "#3b82f6",
-  "AI/ML": "#8b5cf6",
-  "Blockchain": "#ec4899",
-  "IoT": "#f97316",
-  "Others": "#6b7280"
+  "Cloud Computing": "#3b82f6",
+  "UI/UX Design": "#8b5cf6",
+  "Data Science": "#ec4899",
+  "Cybersecurity": "#f97316",
+  "Software Development": "#22c55e",
+  "Others": "#3b82f6"
 };
 
 const AllInternshipByBatch = () => {
