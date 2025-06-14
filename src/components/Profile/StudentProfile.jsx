@@ -205,16 +205,16 @@ const DetailedInfo = ({ studentInfo }) => {
 const ProjectInfo = ({ projectInfo }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
-    studentProjectUrl: projectInfo?.studentProjectUrl || '',
-    studentProjectReport: projectInfo?.studentProjectReport || ''
+    studentProjectUrl: projectInfo?.student_project_url || '',
+    studentProjectReport: projectInfo?.student_project_report || ''
   });
   const [loading, setLoading] = useState(false);
   const jwt = useSelector((state) => state.auth.jwt);
 
   const showAddReportButton =
     projectInfo?.faculty_approval_status &&
-    (!projectInfo?.studentProjectUrl ||
-    !projectInfo?.studentProjectReport);
+    (!projectInfo?.student_project_url || projectInfo?.student_project_url === "" ||
+    !projectInfo?.student_project_report || projectInfo?.student_project_report === "");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -256,18 +256,18 @@ const ProjectInfo = ({ projectInfo }) => {
     { icon: <Target className="w-5 h-5" />, label: "Type", value: projectInfo.student_project_type },
     { icon: <Calendar className="w-5 h-5" />, label: "Academic Year", value: projectInfo.academic_year },
     { icon: <GraduationCap className="w-5 h-5" />, label: "Guide ID", value: projectInfo.student_project_guide_id },
-    projectInfo.studentProjectUrl && {
+    (projectInfo.student_project_url && projectInfo.student_project_url !== "") && {
       icon: <LinkIcon className="w-5 h-5" />,
       label: "Project URL",
-      value: <a href={projectInfo.studentProjectUrl} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
-        {projectInfo.studentProjectUrl}
+      value: <a href={projectInfo.student_project_url} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+        {projectInfo.student_project_url}
       </a>,
     },
-    projectInfo.studentProjectReport && {
+    (projectInfo.student_project_report && projectInfo.student_project_report !== "") && {
       icon: <LinkIcon className="w-5 h-5" />,
       label: "Report URL",
-      value: <a href={projectInfo.studentProjectReport} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
-        {projectInfo.studentProjectReport}
+      value: <a href={projectInfo.student_project_report} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline">
+        {projectInfo.student_project_report}
       </a>,
     },
     {

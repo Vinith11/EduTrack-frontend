@@ -37,7 +37,6 @@ const AllInternship = () => {
           }
         );
         setInternships(response.data);
-        console.log(response);
         setLoading(false);
       } catch (err) {
         setError(

@@ -224,7 +224,7 @@ const ProjectBatch = () => {
                 <h4 className="text-blue-400 font-semibold mb-2">Team Members:</h4>
                 {project.team_members && project.team_members.length > 0 ? (
                   <ul className="space-y-2">
-                    {project.team_members.map((member, index) => (
+                    {project.team_members.split(' ').map((member, index) => (
                       <li key={index} className="text-sm bg-gray-700/50 px-3 py-2 rounded-lg">
                         {member}
                       </li>

@@ -101,12 +101,12 @@ const TeamSelection = memo(({ students, formData, onToggleMember }) => (
             type="button"
             onClick={() => onToggleMember(student.usn)}
             className={`px-4 py-2 rounded-lg ${
-              formData.team_members.includes(student.usn)
+              formData.team_members.split(' ').includes(student.usn)
                 ? "bg-red-500 hover:bg-red-600"
                 : "bg-blue-500 hover:bg-blue-600"
             } text-white transition-colors`}
           >
-            {formData.team_members.includes(student.usn) ? "Remove" : "Add"}
+            {formData.team_members.split(' ').includes(student.usn) ? "Remove" : "Add"}
           </motion.button>
         </motion.div>
       ))}
@@ -174,7 +174,7 @@ const ProjectConfirmation = memo(({ formData, onSubmit, loading }) => {
         },
         {
           label: "Team Members",
-          value: formData.team_members,
+          value: formData.team_members ? formData.team_members.split(' ').filter(member => member.trim() !== '') : [],
           isList: true,
           icon: <Users className="w-4 h-4" />
         }
@@ -280,7 +280,7 @@ const ProjectStepperForm = () => {
     student_project_name: "",
     academic_year: batch,
     student_project_leader_id: usn,
-    team_members: [],
+    team_members: "",
     student_project_guide_id: "",
     student_project_domain: "",
     student_project_description: "",
@@ -343,12 +343,19 @@ const ProjectStepperForm = () => {
   };
 
   const handleToggleMember = (usn) => {
-    setFormData((prev) => ({
-      ...prev,
-      team_members: prev.team_members.includes(usn)
-        ? prev.team_members.filter((id) => id !== usn)
-        : [...prev.team_members, usn],
-    }));
+    setFormData((prev) => {
+      const currentMembers = prev.team_members ? prev.team_members.split(' ').filter(member => member.trim() !== '') : [];
+      const isIncluded = currentMembers.includes(usn);
+      
+      const updatedMembers = isIncluded
+        ? currentMembers.filter((id) => id !== usn)
+        : [...currentMembers, usn];
+      
+      return {
+        ...prev,
+        team_members: updatedMembers.join(' '),
+      };
+    });
   };
 
   const handleToggleGuide = (guideId) => {
